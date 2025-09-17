@@ -6,6 +6,8 @@ import { ICONS } from '../constants';
 interface SidebarProps {
   view: ViewType;
   setView: (view: ViewType) => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 const NavItem: React.FC<{
@@ -27,9 +29,31 @@ const NavItem: React.FC<{
   </li>
 );
 
-const Sidebar: React.FC<SidebarProps> = ({ view, setView }) => {
+const Sidebar: React.FC<SidebarProps> = ({ view, setView, isOpen, onClose }) => {
   return (
-    <aside className="w-64 bg-slate-800 p-4 flex flex-col border-r border-slate-700">
+    <>
+      {/* Mobile overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={onClose}
+        />
+      )}
+      
+      {/* Sidebar */}
+      <aside className={`
+        fixed lg:static inset-y-0 left-0 z-50 w-64 bg-slate-800 p-4 flex flex-col border-r border-slate-700
+        transform transition-transform duration-300 ease-in-out lg:transform-none
+        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
+        {/* Close button for mobile */}
+        <button
+          onClick={onClose}
+          className="lg:hidden absolute top-4 right-4 text-slate-400 hover:text-white"
+        >
+          {ICONS.close}
+        </button>
+        
       <div className="text-2xl font-bold text-white mb-10 flex items-center justify-center py-4">
         <span className="bg-indigo-600 p-2 rounded-lg mr-2">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -63,6 +87,7 @@ const Sidebar: React.FC<SidebarProps> = ({ view, setView }) => {
         <p className="mt-1">© 2024 Your University</p>
       </div>
     </aside>
+    </>
   );
 };
 

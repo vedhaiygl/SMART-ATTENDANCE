@@ -88,39 +88,39 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, createNewSession
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
                 <div>
                     <h2 className="text-3xl font-bold text-white">Course Management</h2>
                     <p className="text-slate-400 mt-1">Select a course to view attendance and start new sessions.</p>
                 </div>
-                <div className="flex items-center space-x-4">
-                    <div className="flex items-center space-x-2">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:space-x-4">
+                    <div className="flex items-center space-x-2 w-full sm:w-auto">
                         <label htmlFor="limit-input" className="text-slate-300 font-medium text-sm">Scan Limit:</label>
                         <input
                             id="limit-input"
                             type="number"
                             value={limit}
                             onChange={e => setLimit(parseInt(e.target.value, 10) || 0)}
-                            className="bg-slate-700 w-24 text-white rounded-md py-2 px-3 border border-slate-600 focus:ring-indigo-500 focus:border-indigo-500"
+                            className="bg-slate-700 w-20 sm:w-24 text-white rounded-md py-2 px-3 border border-slate-600 focus:ring-indigo-500 focus:border-indigo-500"
                             min="1"
                         />
                     </div>
                     <button
                         onClick={handleStartSession}
                         disabled={!selectedCourseId}
-                        className="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-500 transition-colors disabled:bg-slate-600 disabled:cursor-not-allowed"
+                        className="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-500 transition-colors disabled:bg-slate-600 disabled:cursor-not-allowed w-full sm:w-auto"
                     >
                         Start New Session
                     </button>
                 </div>
             </div>
             
-            <div className="flex space-x-2 p-1 bg-slate-800 rounded-lg">
+            <div className="flex flex-wrap gap-2 p-1 bg-slate-800 rounded-lg">
                 {courses.map(course => (
                     <button
                         key={course.id}
                         onClick={() => setSelectedCourseId(course.id)}
-                        className={`w-full text-center font-medium p-2 rounded-md transition-colors ${selectedCourseId === course.id ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-700'}`}
+                        className={`flex-1 min-w-0 text-center font-medium p-2 rounded-md transition-colors text-sm ${selectedCourseId === course.id ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-700'}`}
                     >
                         {course.name}
                     </button>

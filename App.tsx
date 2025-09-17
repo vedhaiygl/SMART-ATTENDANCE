@@ -24,6 +24,7 @@ const MOCK_CREDENTIALS: Record<string, { password: string, user: User }> = {
 function App() {
   const [user, setUser] = useState<User | null>(null);
   const [facultyView, setFacultyView] = useState<ViewType>('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const attendanceData = useAttendanceData();
 
   const handleLogin = async (email: string, password: string, role: UserRole): Promise<string | null> => {
@@ -48,6 +49,15 @@ function App() {
 
   const handleLogout = () => {
     setUser(null);
+    setSidebarOpen(false);
+  };
+
+  const handleMenuToggle = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  const handleSidebarClose = () => {
+    setSidebarOpen(false);
   };
 
   const renderFacultyView = () => {
@@ -70,9 +80,19 @@ function App() {
   if (user.role === 'faculty') {
       return (
         <div className="flex h-screen bg-slate-900 text-slate-200 font-sans">
-          <Sidebar view={facultyView} setView={setFacultyView} />
-          <div className="flex-1 flex flex-col overflow-hidden">
-            <Header view={facultyView} user={user} onLogout={handleLogout} />
+          <Sidebar 
+            view={facultyView} 
+            setView={setFacultyView} 
+            isOpen={sidebarOpen}
+            onClose={handleSidebarClose}
+          />
+          <div className="flex-1 flex flex-col overflow-hidden lg:ml-0">
+            <Header 
+              view={facultyView} 
+              user={user} 
+              onLogout={handleLogout}
+              onMenuToggle={handleMenuToggle}
+            />
             <main className="flex-1 overflow-x-hidden overflow-y-auto bg-slate-900 p-6 lg:p-8">
               {renderFacultyView()}
             </main>
