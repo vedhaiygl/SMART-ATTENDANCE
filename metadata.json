@@ -1,0 +1,7 @@
+{
+  "name": "Smart Attendance Dashboard",
+  "description": "A modern, cloud-based dashboard for administrators and faculty to manage and analyze student attendance. Features QR code generation for sessions, detailed records, and insightful analytics to track engagement.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
