@@ -1,8 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 import type { UserRole } from '../types';
 
-const supabaseUrl: string = 'https://ldibwpnxzkkdrwmuzizt.supabase.co';
-const supabaseAnonKey: string = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxkaWJ3cG54emttZHJ3bXV6aXp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMTU1MTgsImV4cCI6MjA3Mzc5MTUxOH0.svzbstHGu7jLWUaWk0Hx8NEYO9jaKPWzpF6iguMCgSU';
+const supabaseUrl: string = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey: string = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase environment variables. Please check your .env.local file.');
+}
 
 // FIX: Replaced the local Profile interface with an inline definition inside the Database interface.
 // This resolves a TypeScript issue where the `profile` object was being inferred as type `never`,
