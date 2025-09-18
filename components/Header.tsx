@@ -1,35 +1,51 @@
 import React from 'react';
 import type { ViewType, User } from '../types';
+import { ICONS } from '../constants';
+import { useTheme } from '../App';
 
 interface HeaderProps {
   view: ViewType;
   user: User;
   onLogout: () => void;
-  onMenuToggle?: () => void;
+  onMenuClick: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ view, user, onLogout, onMenuToggle }) => {
+const ThemeToggle: React.FC = () => {
+    const { theme, setTheme } = useTheme();
+
+    const toggleTheme = () => {
+        setTheme(theme === 'light' ? 'dark' : 'light');
+    };
+
+    return (
+        <button
+            onClick={toggleTheme}
+            className="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+            aria-label="Toggle theme"
+        >
+            {theme === 'light' ? ICONS.moon : ICONS.sun}
+        </button>
+    );
+};
+
+const Header: React.FC<HeaderProps> = ({ view, user, onLogout, onMenuClick }) => {
   const title = view.charAt(0).toUpperCase() + view.slice(1);
 
   return (
-    <header className="bg-slate-800/80 backdrop-blur-sm p-4 border-b border-slate-700 flex justify-between items-center">
+    <header className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
       <div className="flex items-center">
-        {/* Mobile menu button */}
-        {onMenuToggle && (
-          <button
-            onClick={onMenuToggle}
-            className="lg:hidden mr-3 text-slate-400 hover:text-white"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-        )}
-        <h1 className="text-xl lg:text-2xl font-bold text-white">{title}</h1>
+        <button 
+            onClick={onMenuClick} 
+            className="text-slate-800 dark:text-slate-200 mr-4 lg:hidden"
+            aria-label="Open menu"
+        >
+          {ICONS.menu}
+        </button>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{title}</h1>
       </div>
       <div className="flex items-center space-x-4">
-          <span className="text-slate-300 hidden sm:inline">Welcome, {user.name}</span>
-          <span className="text-slate-300 sm:hidden">{user.name}</span>
+          <span className="text-slate-600 dark:text-slate-300">Welcome, {user.name}</span>
+          <ThemeToggle />
           <button
             onClick={onLogout}
             className="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-500 transition-colors text-sm"

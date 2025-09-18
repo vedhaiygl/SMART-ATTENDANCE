@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -6,6 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Smart Attendance Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+      }
+    </script>
   <script type="importmap">
 {
   "imports": {
@@ -15,12 +21,13 @@
     "recharts": "https://aistudiocdn.com/recharts@^3.2.1",
     "qrcode.react": "https://aistudiocdn.com/qrcode.react@^4.2.0",
     "html5-qrcode": "https://aistudiocdn.com/html5-qrcode@^2.3.8",
-    "@supabase/supabase-js": "https://aistudiocdn.com/@supabase/supabase-js@^2.44.4"
+    "@supabase/supabase-js": "https://aistudiocdn.com/@supabase/supabase-js@^2.44.4",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^0.15.0"
   }
 }
 </script>
 </head>
-  <body class="bg-slate-900">
+  <body>
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>

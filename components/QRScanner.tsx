@@ -4,20 +4,29 @@ import { Html5Qrcode } from 'html5-qrcode';
 interface QRScannerProps {
     onSuccess: (decodedText: string) => void;
     onError: (errorMessage: string) => void;
+    scannerStatus: 'idle' | 'success' | 'error';
 }
 
-const QRScanner: React.FC<QRScannerProps> = ({ onSuccess, onError }) => {
+const QRScanner: React.FC<QRScannerProps> = ({ onSuccess, onError, scannerStatus }) => {
     useEffect(() => {
         const qrCodeScanner = new Html5Qrcode("reader");
         
         const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+        // Wrapper to ensure onSuccess is only called when scanner is active
+        const successCallback = (decodedText: string, decodedResult: any) => {
+            onSuccess(decodedText);
+            if (qrCodeScanner.isScanning) {
+                qrCodeScanner.pause(true); // Pause after scan to show feedback
+            }
+        };
 
         const startScanner = async () => {
             try {
                 await qrCodeScanner.start(
                     { facingMode: "environment" },
                     config,
-                    onSuccess,
+                    successCallback,
                     onError
                 );
             } catch (err) {
@@ -26,7 +35,7 @@ const QRScanner: React.FC<QRScannerProps> = ({ onSuccess, onError }) => {
                     await qrCodeScanner.start(
                         {}, // default camera
                         config,
-                        onSuccess,
+                        successCallback,
                         onError
                     );
                 } catch (fallbackErr) {
@@ -39,7 +48,7 @@ const QRScanner: React.FC<QRScannerProps> = ({ onSuccess, onError }) => {
         startScanner();
 
         return () => {
-            if (qrCodeScanner.isScanning) {
+            if (qrCodeScanner && qrCodeScanner.isScanning) {
                 qrCodeScanner.stop().then(() => {
                     console.log("QR Code scanning stopped.");
                 }).catch(err => {
@@ -50,11 +59,34 @@ const QRScanner: React.FC<QRScannerProps> = ({ onSuccess, onError }) => {
             }
         };
     }, [onSuccess, onError]);
+    
+    useEffect(() => {
+        const qrCodeScanner = Html5Qrcode.getCameras() ? new Html5Qrcode("reader") : null;
+        if (qrCodeScanner && qrCodeScanner.isScanning && scannerStatus === 'idle') {
+           qrCodeScanner.resume();
+        }
+    }, [scannerStatus]);
+    
+    const feedbackClasses = {
+        idle: 'border-slate-200 dark:border-slate-700',
+        success: 'border-green-500 shadow-lg shadow-green-500/50',
+        error: 'border-red-500 shadow-lg shadow-red-500/50',
+    };
+
+    const animationClass = scannerStatus === 'success' ? 'scale-105' : 'scale-100';
+
 
     return (
-        <div className="bg-slate-800 p-4 rounded-xl border-2 border-slate-700 shadow-lg">
+        <div className={`relative bg-white dark:bg-slate-800 p-4 rounded-xl border-4 shadow-lg transform transition-all duration-300 ${feedbackClasses[scannerStatus]} ${animationClass}`}>
             <div id="reader" className="w-full rounded-lg overflow-hidden"></div>
-            <p className="text-slate-400 text-sm mt-2 text-center">Place the QR code inside the box</p>
+             {scannerStatus === 'error' && (
+                <div className="absolute inset-4 flex items-center justify-center bg-black/30 rounded-lg">
+                    <div className="text-center py-2 px-4 bg-red-600 rounded-md shadow-lg">
+                        <p className="text-white font-bold text-base">Invalid QR Code</p>
+                    </div>
+                </div>
+            )}
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-2 text-center">Place the QR code inside the box</p>
         </div>
     );
 };

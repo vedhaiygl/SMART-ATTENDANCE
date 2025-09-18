@@ -3,17 +3,37 @@ import { useState, useCallback } from 'react';
 import type { Course, Student, Session, AttendanceRecord, MarkAttendanceResult } from '../types';
 
 const generateInitialData = (): Course[] => {
-  const students: Student[] = Array.from({ length: 20 }, (_, i) => ({
+  const adjectives = ['Agile', 'Bright', 'Clever', 'Daring', 'Eager', 'Fearless', 'Gifted', 'Happy', 'Intrepid', 'Jolly', 'Keen', 'Lively', 'Mighty', 'Noble', 'Optimistic', 'Proud', 'Quick', 'Resourceful', 'Stellar', 'Tenacious', 'Unwavering', 'Valiant', 'Wise', 'Youthful', 'Zealous', 'Creative', 'Dynamic', 'Energetic', 'Focused', 'Genuine', 'Honest', 'Inventive', 'Joyful', 'Kind', 'Loyal', 'Motivated', 'Neat', 'Open', 'Patient', 'Quiet', 'Reliable', 'Sharp', 'Thoughtful', 'Unique', 'Vibrant', 'Warm', 'Xenial', 'Young', 'Zesty'];
+  const animals = ['Aardvark', 'Bison', 'Cheetah', 'Dolphin', 'Elephant', 'Falcon', 'Gazelle', 'Hawk', 'Iguana', 'Jaguar', 'Koala', 'Lemur', 'Meerkat', 'Nightingale', 'Ocelot', 'Panther', 'Quokka', 'Rabbit', 'Salamander', 'Tiger', 'Urial', 'Vulture', 'Walrus', 'Yak', 'Zebra', 'Alpaca', 'Bear', 'Cat', 'Dog', 'Eel', 'Fox', 'Goat', 'Horse', 'Impala', 'Jellyfish', 'Kangaroo', 'Lion', 'Monkey', 'Newt', 'Owl', 'Penguin', 'Quail', 'Raccoon', 'Shark', 'Turtle', 'Unicorn', 'Viper', 'Wolf', 'Xerus', 'Yellowjacket', 'Zonkey'];
+
+  // Helper to shuffle array
+  const shuffle = (array: string[]) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  };
+
+  const shuffledAdjectives = shuffle([...adjectives]);
+  const shuffledAnimals = shuffle([...animals]);
+
+  // Increased student count
+  const students: Student[] = Array.from({ length: 50 }, (_, i) => ({
     id: `student-${i + 1}`,
     name: `Student ${i + 1}`,
+    anonymizedName: `${shuffledAdjectives[i % shuffledAdjectives.length]} ${shuffledAnimals[i % shuffledAnimals.length]}`,
   }));
 
+  const studentOne = students[0]; // Alex Johnson is student-1
+
+  // Expanded course list
   const courses: Course[] = [
     {
       id: 'cs101',
       name: 'Intro to Computer Science',
       code: 'CS101',
-      students: students.slice(0, 15),
+      students: [studentOne, ...students.slice(1, 20)], // student-1 is enrolled
       sessions: [],
       attendance: [],
     },
@@ -21,7 +41,7 @@ const generateInitialData = (): Course[] => {
       id: 'math203',
       name: 'Advanced Calculus',
       code: 'MATH203',
-      students: students.slice(10, 20),
+      students: [studentOne, ...students.slice(20, 35)], // student-1 is enrolled
       sessions: [],
       attendance: [],
     },
@@ -29,7 +49,39 @@ const generateInitialData = (): Course[] => {
       id: 'phy301',
       name: 'Quantum Physics',
       code: 'PHY301',
-      students: students.slice(5, 15),
+      students: [studentOne, ...students.slice(35, 50)], // student-1 is enrolled
+      sessions: [],
+      attendance: [],
+    },
+    {
+      id: 'ds202',
+      name: 'Data Structures & Algorithms',
+      code: 'DS202',
+      students: [studentOne, ...students.slice(5, 25)], // student-1 is enrolled
+      sessions: [],
+      attendance: [],
+    },
+    {
+      id: 'os401',
+      name: 'Operating Systems',
+      code: 'OS401',
+      students: [studentOne, ...students.slice(10, 30)], // student-1 is enrolled
+      sessions: [],
+      attendance: [],
+    },
+    {
+      id: 'db501',
+      name: 'Database Management',
+      code: 'DB501',
+      students: [studentOne, ...students.slice(15, 40)], // student-1 is enrolled
+      sessions: [],
+      attendance: [],
+    },
+    {
+      id: 'net303',
+      name: 'Computer Networks',
+      code: 'NET303',
+      students: [studentOne, ...students.slice(25, 45)], // student-1 is enrolled
       sessions: [],
       attendance: [],
     }
@@ -37,6 +89,9 @@ const generateInitialData = (): Course[] => {
 
   // Generate some historical sessions and attendance data
   courses.forEach(course => {
+    // Making sure student lists are unique
+    course.students = [...new Map(course.students.map(item => [item['id'], item])).values()];
+
     for (let i = 1; i <= 10; i++) {
       const date = new Date();
       date.setDate(date.getDate() - (10 - i) * 3); // Sessions every 3 days
@@ -50,7 +105,9 @@ const generateInitialData = (): Course[] => {
       
       let presentCount = 0;
       course.students.forEach(student => {
-        const isPresent = Math.random() > 0.15;
+        // student-1 (Alex) has a higher attendance rate for realism
+        const attendanceChance = student.id === 'student-1' ? 0.05 : 0.15;
+        const isPresent = Math.random() > attendanceChance;
         if (isPresent) presentCount++;
         const attendanceRecord: AttendanceRecord = {
           studentId: student.id,
@@ -68,6 +125,9 @@ const generateInitialData = (): Course[] => {
 };
 
 const generateQrCodeValue = () => `qr_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+
+// How long a QR code is valid for in seconds.
+const QR_CODE_VALIDITY_SECONDS = 30; // Increased validity for manual scan flow.
 
 export const useAttendanceData = () => {
   const [courses, setCourses] = useState<Course[]>(generateInitialData);
@@ -123,9 +183,19 @@ export const useAttendanceData = () => {
   // FIX: Refactored function to correctly handle synchronous logic and asynchronous state updates.
   // This resolves a comparison error and ensures correct behavior for attendance marking.
   const markAttendance = useCallback((studentId: string, qrCodeValue: string): MarkAttendanceResult => {
+    // Check for expiration first, based on the timestamp in the QR code string.
+    if (qrCodeValue.startsWith('qr_')) {
+        const parts = qrCodeValue.split('_');
+        if (parts.length >= 2) {
+            const timestamp = parseInt(parts[1], 10);
+            if (!isNaN(timestamp) && Date.now() - timestamp > QR_CODE_VALIDITY_SECONDS * 1000) {
+                return 'expired_qr';
+            }
+        }
+    }
+      
     const coursesCopy = JSON.parse(JSON.stringify(courses));
     let finalResult: MarkAttendanceResult = 'invalid_qr';
-    let sessionToUpdateId: string | null = null;
     let stateChanged = false;
 
     for (const course of coursesCopy) {
@@ -152,11 +222,17 @@ export const useAttendanceData = () => {
           }
           
           course.attendance[recordIndex].status = 'Present';
-          session.scannedCount = (session.scannedCount ?? 0) + 1;
-          session.qrCodeValue = 'generating...';
+          const newScannedCount = (session.scannedCount ?? 0) + 1;
+          session.scannedCount = newScannedCount;
+          
+          // Regenerate QR code immediately if limit is not reached
+          if (session.limit !== undefined && newScannedCount >= session.limit) {
+              session.qrCodeValue = 'limit_reached'; // Special value to indicate completion
+          } else {
+              session.qrCodeValue = generateQrCodeValue();
+          }
           
           finalResult = 'success';
-          sessionToUpdateId = sessionId;
           stateChanged = true;
           break;
         } else {
@@ -169,15 +245,9 @@ export const useAttendanceData = () => {
     if (stateChanged) {
         setCourses(coursesCopy);
     }
-    
-    if (finalResult === 'success' && sessionToUpdateId) {
-      setTimeout(() => {
-        regenerateQrCode(sessionToUpdateId);
-      }, 1500);
-    }
 
     return finalResult;
-  }, [courses, regenerateQrCode]);
+  }, [courses]);
 
   const simulateSingleScan = useCallback((courseId: string, sessionId: string) => {
     const course = courses.find(c => c.id === courseId);
@@ -198,6 +268,47 @@ export const useAttendanceData = () => {
     }
   }, [courses, markAttendance]);
 
+  const toggleAttendance = useCallback((studentId: string, sessionId: string, courseId: string) => {
+    setCourses(prevCourses => {
+        // Create a deep copy to avoid direct state mutation
+        const newCourses = JSON.parse(JSON.stringify(prevCourses));
+        const course = newCourses.find((c: Course) => c.id === courseId);
+        
+        if (!course) return prevCourses;
 
-  return { courses, createNewSession, markAttendance, simulateSingleScan };
+        const attendanceRecord = course.attendance.find((a: AttendanceRecord) => a.studentId === studentId && a.sessionId === sessionId);
+        const session = course.sessions.find((s: Session) => s.id === sessionId);
+
+        if (attendanceRecord && session) {
+            if (attendanceRecord.status === 'Present') {
+                attendanceRecord.status = 'Absent';
+                session.scannedCount = Math.max(0, (session.scannedCount ?? 0) - 1);
+            } else {
+                attendanceRecord.status = 'Present';
+                session.scannedCount = (session.scannedCount ?? 0) + 1;
+            }
+            return newCourses;
+        }
+        
+        // If no change was made, return the original state to prevent re-render
+        return prevCourses;
+    });
+  }, []);
+
+  // FIX: Completed the resetData function and added a return statement to the custom hook.
+  // This ensures the hook provides its state and methods to consuming components,
+  // resolving the 'property does not exist on type void' errors in App.tsx.
+  const resetData = useCallback(() => {
+    setCourses(generateInitialData());
+  }, []);
+
+  return {
+    courses,
+    createNewSession,
+    regenerateQrCode,
+    markAttendance,
+    simulateSingleScan,
+    toggleAttendance,
+    resetData,
+  };
 };

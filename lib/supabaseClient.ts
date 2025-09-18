@@ -1,30 +1,31 @@
 import { createClient } from '@supabase/supabase-js';
 import type { UserRole } from '../types';
 
-// =================================================================================
-// IMPORTANT: ACTION REQUIRED
-//
-// You must replace these placeholder values with your actual Supabase project URL
-// and public anon key. You can find these in your Supabase project dashboard
-// under Project Settings > API.
-// =================================================================================
-// FIX: Explicitly type as string to avoid literal type comparison error.
-const supabaseUrl: string = 'https://tlbqiecteyqcryhcjfmq.supabase.co';
-const supabaseAnonKey: string = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRsYnFpZWN0ZXlxY3J5aGNqZm1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwMzQ3MjYsImV4cCI6MjA3MzYxMDcyNn0.qkEhilpVlcb_fVCvn1Lmz8vdSdWEUVFJtSpPyIT6mg8';
+const supabaseUrl: string = 'https://ldibwpnxzkkdrwmuzizt.supabase.co';
+const supabaseAnonKey: string = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxkaWJ3cG54emttZHJ3bXV6aXp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMTU1MTgsImV4cCI6MjA3Mzc5MTUxOH0.svzbstHGu7jLWUaWk0Hx8NEYO9jaKPWzpF6iguMCgSU';
 
-interface Profile {
-    id: string;
-    name: string;
-    role: UserRole;
-}
-
+// FIX: Replaced the local Profile interface with an inline definition inside the Database interface.
+// This resolves a TypeScript issue where the `profile` object was being inferred as type `never`,
+// causing property access errors. This change ensures Supabase correctly types database interactions.
 interface Database {
   public: {
     Tables: {
       profiles: {
-        Row: Profile
-        Insert: Profile
-        Update: Partial<Profile>
+        Row: {
+          id: string;
+          name: string;
+          role: UserRole;
+        }
+        Insert: {
+          id: string;
+          name: string;
+          role: UserRole;
+        }
+        Update: {
+          id?: string;
+          name?: string;
+          role?: UserRole;
+        }
       }
     }
     Views: {
@@ -42,11 +43,7 @@ interface Database {
   }
 }
 
-let supabaseClient: any = null;
-
-// Only initialize the client if the placeholders have been replaced.
-if (supabaseUrl !== 'YOUR_SUPABASE_URL' && supabaseAnonKey !== 'YOUR_SUPABASE_ANON_KEY') {
-    supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey);
-}
+// Initialize the Supabase client with the provided credentials.
+const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey);
 
 export const supabase = supabaseClient;

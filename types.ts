@@ -1,6 +1,8 @@
+
 export interface Student {
   id: string;
   name: string;
+  anonymizedName: string;
 }
 
 export interface Session {
@@ -35,7 +37,8 @@ export interface User {
     id: string;
     name: string;
     role: UserRole;
+    email: string;
 }
 
 // FIX: Moved MarkAttendanceResult here to be a shared type.
-export type MarkAttendanceResult = 'success' | 'already_marked' | 'limit_reached' | 'not_enrolled' | 'error' | 'invalid_qr';
+export type MarkAttendanceResult = 'success' | 'already_marked' | 'limit_reached' | 'not_enrolled' | 'error' | 'invalid_qr' | 'expired_qr';
