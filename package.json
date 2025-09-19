@@ -1,5 +1,5 @@
 {
-  "name": "smart-attendance-dashboard",
+  "name": "byteforce-attendance-dashboard",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -14,8 +14,8 @@
     "recharts": "^3.2.1",
     "qrcode.react": "^4.2.0",
     "html5-qrcode": "^2.3.8",
-    "@supabase/supabase-js": "^2.44.4",
-    "@google/genai": "^0.15.0"
+    "@google/genai": "^0.15.0",
+    "@supabase/supabase-js": "^2.57.4"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

@@ -1,21 +1,29 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
-import type { Course } from '../types';
+import React, { useState, useMemo, useEffect } from 'react';
+import type { Course, Student, Session } from '../types';
 import QRCodeModal from './QRCodeModal';
+import EnrollStudentModal from './EnrollStudentModal';
 import { ICONS } from '../constants';
+import { QR_CODE_VALIDITY_SECONDS } from '../hooks/useAttendanceData';
 
 interface CourseManagerProps {
     courses: Course[];
-    createNewSession: (courseId: string, type: 'Online' | 'Offline', limit: number) => { sessionId: string; qrCodeValue: string };
-    simulateSingleScan: (courseId: string, sessionId: string) => void;
+    allStudents: Student[];
+    createNewSession: (courseId: string, type: 'Online' | 'Offline', limit: number, livenessCheck: boolean) => { sessionId: string; qrCodeValue: string; shortCode?: string };
     toggleAttendance: (studentId: string, sessionId: string, courseId: string) => void;
     regenerateQrCode: (sessionId: string) => void;
+    enrollStudent: (courseId: string, studentId: string) => void;
+    deleteSession: (courseId: string, sessionId: string) => void;
 }
 
-const CourseManager: React.FC<CourseManagerProps> = ({ courses, createNewSession, simulateSingleScan, toggleAttendance, regenerateQrCode }) => {
+const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, createNewSession, toggleAttendance, regenerateQrCode, enrollStudent, deleteSession }) => {
     const [selectedCourseId, setSelectedCourseId] = useState<string | null>(courses.length > 0 ? courses[0].id : null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
     const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
     const [limit, setLimit] = useState(50);
+    const [sessionType, setSessionType] = useState<'Online' | 'Offline'>('Offline');
+    const [livenessCheckEnabled, setLivenessCheckEnabled] = useState(false);
+    const [sessionToDelete, setSessionToDelete] = useState<Session | null>(null);
 
     const selectedCourse = useMemo(() => {
         return courses.find(c => c.id === selectedCourseId);
@@ -44,8 +52,6 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, createNewSession
         });
     }, [selectedCourse]);
 
-    const timerId = useRef<number | undefined>(undefined);
-
     useEffect(() => {
         if (selectedCourse) {
             setLimit(selectedCourse.students.length);
@@ -53,36 +59,14 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, createNewSession
     }, [selectedCourse]);
 
     useEffect(() => {
-        const runSimulationStep = () => {
-            const course = courses.find(c => c.id === selectedCourseId);
-            const session = course?.sessions.find(s => s.id === activeSessionId);
+        if (isModalOpen && activeSessionId) {
+            const interval = setInterval(() => {
+                regenerateQrCode(activeSessionId);
+            }, QR_CODE_VALIDITY_SECONDS * 1000);
 
-            if (!course || !session || !isModalOpen) {
-                return; 
-            }
-
-            const isLimitReached = session.limit !== undefined && (session.scannedCount ?? 0) >= session.limit;
-            const isAbsentStudentAvailable = course.students.some(student => 
-                course.attendance.find(att => att.sessionId === session.id && att.studentId === student.id && att.status === 'Absent')
-            );
-            
-            if (isLimitReached || !isAbsentStudentAvailable) {
-                return;
-            }
-
-            simulateSingleScan(selectedCourseId!, activeSessionId!);
-            
-            timerId.current = window.setTimeout(runSimulationStep, 2000);
-        };
-
-        if (isModalOpen) {
-            timerId.current = window.setTimeout(runSimulationStep, 1500); 
+            return () => clearInterval(interval);
         }
-
-        return () => {
-            clearTimeout(timerId.current);
-        };
-    }, [isModalOpen, selectedCourseId, activeSessionId, courses, simulateSingleScan]);
+    }, [isModalOpen, activeSessionId, regenerateQrCode]);
 
 
     const handleStartSession = () => {
@@ -91,7 +75,8 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, createNewSession
                 alert('Please enter a valid limit greater than 0.');
                 return;
             }
-            const { sessionId } = createNewSession(selectedCourseId, 'Offline', limit);
+            const isLivenessActive = sessionType === 'Online' && livenessCheckEnabled;
+            const { sessionId } = createNewSession(selectedCourseId, sessionType, limit, isLivenessActive);
             setActiveSessionId(sessionId);
             setIsModalOpen(true);
         }
@@ -195,7 +180,7 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, createNewSession
                     <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Course Management</h2>
                     <p className="text-slate-500 dark:text-slate-400 mt-1">Select a course to view attendance and start new sessions.</p>
                 </div>
-                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-row lg:items-center gap-4">
                     <div className="flex items-center space-x-2">
                         <label htmlFor="limit-input" className="text-slate-600 dark:text-slate-300 font-medium text-sm whitespace-nowrap">Scan Limit:</label>
                         <input
@@ -207,10 +192,33 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, createNewSession
                             min="1"
                         />
                     </div>
+                    <div className="flex items-center space-x-2">
+                        <label htmlFor="session-type-select" className="text-slate-600 dark:text-slate-300 font-medium text-sm whitespace-nowrap">Session Type:</label>
+                        <select
+                            id="session-type-select"
+                            value={sessionType}
+                            onChange={e => setSessionType(e.target.value as 'Online' | 'Offline')}
+                            className="bg-slate-100 dark:bg-slate-700 w-full sm:w-28 text-slate-900 dark:text-white rounded-md py-2 px-3 border border-slate-300 dark:border-slate-600 focus:ring-indigo-500 focus:border-indigo-500"
+                        >
+                            <option value="Offline">Offline</option>
+                            <option value="Online">Online</option>
+                        </select>
+                    </div>
+                     <div className={`flex items-center space-x-2 transition-opacity duration-300 ${sessionType === 'Online' ? 'opacity-100' : 'opacity-50'}`}>
+                        <input
+                            id="liveness-check"
+                            type="checkbox"
+                            checked={livenessCheckEnabled}
+                            onChange={e => setLivenessCheckEnabled(e.target.checked)}
+                            disabled={sessionType !== 'Online'}
+                            className="h-4 w-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-700 disabled:cursor-not-allowed"
+                        />
+                        <label htmlFor="liveness-check" className={`text-slate-600 dark:text-slate-300 font-medium text-sm whitespace-nowrap ${sessionType !== 'Online' ? 'cursor-not-allowed' : ''}`}>Enable Liveness Check</label>
+                    </div>
                      <button
                         onClick={handleExportStudentsCSV}
                         disabled={!selectedCourseId}
-                        className="flex items-center justify-center bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-2 px-4 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
+                        className="flex items-center justify-center bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-2 px-4 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-all active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
                     >
                         {ICONS.users}
                         <span className="ml-2">Export Students</span>
@@ -218,7 +226,7 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, createNewSession
                      <button
                         onClick={handleExportCSV}
                         disabled={!selectedCourseId}
-                        className="flex items-center justify-center bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-2 px-4 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
+                        className="flex items-center justify-center bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-2 px-4 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-all active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
                     >
                         {ICONS.export}
                         <span className="ml-2">Export Attendance</span>
@@ -226,7 +234,7 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, createNewSession
                     <button
                         onClick={handleStartSession}
                         disabled={!selectedCourseId}
-                        className="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-500 transition-colors disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
+                        className="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-500 transition-all active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
                     >
                         Start New Session
                     </button>
@@ -238,7 +246,7 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, createNewSession
                     <button
                         key={course.id}
                         onClick={() => setSelectedCourseId(course.id)}
-                        className={`flex-shrink-0 text-center font-medium p-2 rounded-md transition-colors whitespace-nowrap px-4 ${selectedCourseId === course.id ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+                        className={`flex-shrink-0 text-center font-medium p-2 rounded-md transition-all active:scale-95 whitespace-nowrap px-4 ${selectedCourseId === course.id ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
                     >
                         {course.name}
                     </button>
@@ -259,7 +267,19 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, createNewSession
                                     <tr>
                                         <th scope="col" className="p-3 font-semibold tracking-wider">Student Name</th>
                                         {selectedCourse.sessions.slice(-5).map(session => (
-                                            <th key={session.id} scope="col" className="p-3 font-semibold tracking-wider text-center">{new Date(session.date).toLocaleDateString()}</th>
+                                            <th key={session.id} scope="col" className="p-3 font-semibold tracking-wider text-center">
+                                                <div className="flex items-center justify-center gap-2">
+                                                    <span>{new Date(session.date).toLocaleDateString()}</span>
+                                                    <button
+                                                        onClick={() => setSessionToDelete(session)}
+                                                        className="text-slate-400 hover:text-red-500 transition-colors p-1 rounded-full hover:bg-red-500/10"
+                                                        title={`Delete session on ${new Date(session.date).toLocaleDateString()}`}
+                                                        aria-label={`Delete session on ${new Date(session.date).toLocaleDateString()}`}
+                                                    >
+                                                        {ICONS.trash}
+                                                    </button>
+                                                </div>
+                                            </th>
                                         ))}
                                     </tr>
                                 </thead>
@@ -279,9 +299,17 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, createNewSession
 
                     {/* Enrolled Students Card */}
                     <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-                        <div className="p-6 border-b border-slate-200 dark:border-slate-700">
-                            <h3 className="text-xl font-bold text-slate-900 dark:text-white">Enrolled Students ({studentStats.length})</h3>
-                            <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">A complete list of students in this course and their overall attendance summary.</p>
+                        <div className="p-6 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center flex-wrap gap-4">
+                            <div>
+                                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Enrolled Students ({studentStats.length})</h3>
+                                <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">A complete list of students in this course and their overall attendance summary.</p>
+                            </div>
+                            <button
+                                onClick={() => setIsEnrollModalOpen(true)}
+                                className="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 font-bold py-2 px-4 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-900 transition-all active:scale-95 text-sm whitespace-nowrap"
+                            >
+                                Enroll Student
+                            </button>
                         </div>
                         <div className="overflow-y-auto max-h-[400px]">
                             <table className="w-full text-sm text-left text-slate-600 dark:text-slate-300">
@@ -332,10 +360,55 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, createNewSession
             {isModalOpen && activeSession && (
                 <QRCodeModal
                     onClose={() => setIsModalOpen(false)}
-                    qrCodeValue={activeSession.qrCodeValue}
-                    scannedCount={activeSession.scannedCount ?? 0}
-                    limit={activeSession.limit ?? 0}
+                    session={activeSession}
                 />
+            )}
+            
+            {isEnrollModalOpen && selectedCourse && (
+                <EnrollStudentModal
+                    isOpen={isEnrollModalOpen}
+                    onClose={() => setIsEnrollModalOpen(false)}
+                    course={selectedCourse}
+                    allStudents={allStudents}
+                    enrollStudent={enrollStudent}
+                />
+            )}
+
+            {sessionToDelete && selectedCourse && (
+                <div 
+                    className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 animate-fade-in"
+                    aria-modal="true"
+                    role="dialog"
+                >
+                    <div 
+                        className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-8 max-w-md w-full border border-slate-200 dark:border-slate-700 animate-slide-in-top"
+                    >
+                        <h2 className="text-xl font-bold text-slate-900 dark:text-white">Confirm Session Deletion</h2>
+                        <p className="text-slate-500 dark:text-slate-400 mt-2">
+                            Are you sure you want to delete the session from <strong className="text-slate-700 dark:text-slate-200">{new Date(sessionToDelete.date).toLocaleDateString()}</strong>?
+                        </p>
+                        <p className="text-sm bg-red-500/10 text-red-600 dark:text-red-400 mt-4 p-3 rounded-md">
+                            <strong>Warning:</strong> This action is irreversible and will permanently remove the session along with all its attendance records.
+                        </p>
+                        <div className="mt-6 flex justify-end space-x-4">
+                            <button
+                                onClick={() => setSessionToDelete(null)}
+                                className="bg-slate-200 dark:bg-slate-600 text-slate-800 dark:text-slate-100 font-bold py-2 px-4 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-500 transition-all active:scale-95"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={() => {
+                                    deleteSession(selectedCourse.id, sessionToDelete.id);
+                                    setSessionToDelete(null);
+                                }}
+                                className="bg-red-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-500 transition-all active:scale-95"
+                            >
+                                Confirm Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );

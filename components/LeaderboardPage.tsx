@@ -83,13 +83,13 @@ const LeaderboardPage: React.FC<LeaderboardPageProps> = ({ user, courses }) => {
                 <div className="flex items-center space-x-2 p-1 bg-slate-100 dark:bg-slate-700 rounded-lg self-start md:self-center">
                     <button
                         onClick={() => setSortBy('streak')}
-                        className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors ${sortBy === 'streak' ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}`}
+                        className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-all active:scale-95 ${sortBy === 'streak' ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}`}
                     >
                         Top Streaks
                     </button>
                     <button
                         onClick={() => setSortBy('attendance')}
-                        className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors ${sortBy === 'attendance' ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}`}
+                        className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-all active:scale-95 ${sortBy === 'attendance' ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}`}
                     >
                         Top Attendance
                     </button>
@@ -112,7 +112,8 @@ const LeaderboardPage: React.FC<LeaderboardPageProps> = ({ user, courses }) => {
                                 {leaderboardData.map((student, index) => (
                                     <tr 
                                         key={student.id} 
-                                        className={`border-b border-slate-200 dark:border-slate-700 ${student.id === user.id ? 'bg-indigo-100 dark:bg-indigo-900/50' : 'hover:bg-slate-50 dark:hover:bg-slate-700/30'}`}
+                                        className={`border-b border-slate-200 dark:border-slate-700 animate-slide-in-top ${student.id === user.id ? 'bg-indigo-100 dark:bg-indigo-900/50' : 'hover:bg-slate-50 dark:hover:bg-slate-700/30'}`}
+                                        style={{ animationDelay: `${Math.min(index * 100, 1000)}ms` }}
                                     >
                                         <td className="p-4 font-bold text-lg text-center text-slate-800 dark:text-slate-100">
                                             {index < 3 ? ['🥇', '🥈', '🥉'][index] : index + 1}

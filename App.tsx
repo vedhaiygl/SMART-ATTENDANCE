@@ -1,4 +1,3 @@
-
 import React, { useState, createContext, useContext, useEffect, useMemo } from 'react';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -9,7 +8,8 @@ import Login from './components/Login';
 import StudentView from './components/StudentView';
 import { useAttendanceData } from './hooks/useAttendanceData';
 import type { ViewType, User, UserRole } from './types';
-import { supabase } from './lib/supabaseClient';
+import LoadingScreen from './components/LoadingScreen';
+import SplashScreen from './components/SplashScreen';
 
 // THEME MANAGEMENT
 type Theme = 'light' | 'dark';
@@ -46,102 +46,72 @@ const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 };
 
+const MOCK_USERS: User[] = [
+    { id: 'faculty-1', name: 'Dr. Admin', email: 'faculty@university.edu', role: 'faculty' },
+    { id: 'student-1', name: 'Vedhan', email: 'vedhanmail@gmail.com', role: 'student' },
+    { id: 'student-2', name: 'Mithun', email: 'mithunk@gmail.com', role: 'student' },
+    { id: 'student-3', name: 'Sanjeevi', email: 'sanjeevi@gmail.com', role: 'student' },
+];
+
 function AppContent() {
   const [user, setUser] = useState<User | null>(null);
-  const [authLoading, setAuthLoading] = useState(true);
+  const [isInitializing, setIsInitializing] = useState(true);
+  const [showSplashScreen, setShowSplashScreen] = useState(true);
   const [facultyView, setFacultyView] = useState<ViewType>('dashboard');
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const attendanceData = useAttendanceData();
+  const attendanceData = useAttendanceData(user);
 
   useEffect(() => {
-    setAuthLoading(true);
-    // Align with Supabase v2 API for onAuthStateChange.
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (session?.user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-        if (profile) {
-          setUser({
-            id: session.user.id,
-            name: profile.name,
-            role: profile.role,
-            email: session.user.email!,
-          });
+    const savedSession = localStorage.getItem('userSession');
+    if (savedSession) {
+        try {
+            const savedUser: User = JSON.parse(savedSession);
+            setUser(savedUser);
+            setShowSplashScreen(false); // If logged in, don't show splash screen
+        } catch (error) {
+            console.error("Error parsing user session from localStorage:", error);
+            localStorage.removeItem('userSession');
         }
-      } else {
-        setUser(null);
-      }
-      setAuthLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    }
+    setIsInitializing(false);
   }, []);
 
-  const handleSignUp = async (name: string, email: string, password: string, role: UserRole): Promise<string | null> => {
-    // Align with Supabase v2 API for signUp.
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    if (error) {
-        return error.message;
-    }
-    if (data.user) {
-        const { error: profileError } = await supabase
-            .from('profiles')
-            .insert({ id: data.user.id, name, role });
-        if (profileError) {
-            return profileError.message;
+  const handleLogin = (email: string, password: string, role: UserRole, rememberMe: boolean): string | null => {
+    const foundUser = MOCK_USERS.find(u => u.email.toLowerCase() === email.toLowerCase() && u.role === role);
+    
+    if (foundUser && password === 'password123') {
+        setUser(foundUser);
+        if (rememberMe) {
+            localStorage.setItem('userSession', JSON.stringify(foundUser));
+        } else {
+            localStorage.removeItem('userSession');
         }
         return null;
     }
-    return 'An unknown error occurred during sign up.';
-  };
 
-  const handleLogin = async (email: string, password: string, role: UserRole): Promise<string | null> => {
-    // Align with Supabase v2 API for signIn (`signInWithPassword`).
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-        return error.message;
+    // Check if user exists with a different role
+    const roleMismatchUser = MOCK_USERS.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (roleMismatchUser) {
+        return 'Your account role does not match this login portal. Please use the other portal.';
     }
-    if (data.user) {
-        const { data: profile, error: profileError } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', data.user.id)
-            .single();
 
-        if (profileError) {
-            await supabase.auth.signOut();
-            return "Could not retrieve user profile.";
-        }
-
-        if (profile) {
-            if (profile.role === role) {
-                // User state is set by onAuthStateChange, so we don't need to call setUser here.
-                return null;
-            } else {
-                await supabase.auth.signOut();
-                return 'Your account role does not match this login portal. Please use the other portal.';
-            }
-        }
-    }
     return 'Invalid email or password.';
   };
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  const handleLogout = () => {
     setUser(null);
+    setShowSplashScreen(true);
+    localStorage.removeItem('userSession');
     attendanceData.resetData();
     setFacultyView('dashboard');
   };
 
-  const handleForgotPassword = async (email: string): Promise<string | null> => {
-    // Align with Supabase v2 API for resetPasswordForEmail.
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin,
-    });
-    return error ? error.message : null;
+  const handleForgotPassword = (email: string): string | null => {
+    const foundUser = MOCK_USERS.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (foundUser) {
+        return `Password reset is not available in this demo. Your password is 'password123'.`;
+    }
+    return 'If an account existed for this email, a reset link would be sent.';
   };
 
   const renderFacultyView = () => {
@@ -157,16 +127,16 @@ function AppContent() {
     }
   };
 
-  if (authLoading) {
-    return (
-        <div className="flex items-center justify-center h-screen bg-slate-50 dark:bg-slate-900">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-500"></div>
-        </div>
-    );
+  if (isInitializing || attendanceData.loading) {
+    return <LoadingScreen />;
+  }
+
+  if (showSplashScreen) {
+    return <SplashScreen onEnter={() => setShowSplashScreen(false)} />;
   }
 
   if (!user) {
-    return <Login onLogin={handleLogin} onSignUp={handleSignUp} onForgotPassword={handleForgotPassword} />;
+    return <Login onLogin={handleLogin} onForgotPassword={handleForgotPassword} />;
   }
   
   if (user.role === 'faculty') {

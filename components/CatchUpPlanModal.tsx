@@ -77,7 +77,7 @@ const CatchUpPlanModal: React.FC<CatchUpPlanModalProps> = ({ onClose, isLoading,
                 className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-8 max-w-2xl w-full border border-slate-200 dark:border-slate-700 relative transform transition-transform scale-100"
                 onClick={e => e.stopPropagation()}
             >
-                <button onClick={onClose} className="absolute top-4 right-4 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white" aria-label="Close">
+                <button onClick={onClose} className="absolute top-4 right-4 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-transform active:scale-90" aria-label="Close">
                     {ICONS.close}
                 </button>
                 <div className="flex items-center mb-4">

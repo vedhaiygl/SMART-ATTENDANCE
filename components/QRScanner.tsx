@@ -69,23 +69,16 @@ const QRScanner: React.FC<QRScannerProps> = ({ onSuccess, onError, scannerStatus
     
     const feedbackClasses = {
         idle: 'border-slate-200 dark:border-slate-700',
-        success: 'border-green-500 shadow-lg shadow-green-500/50',
-        error: 'border-red-500 shadow-lg shadow-red-500/50',
+        success: 'border-green-500 animate-green-glow',
+        error: 'border-red-500 animate-red-glow',
     };
 
     const animationClass = scannerStatus === 'success' ? 'scale-105' : 'scale-100';
 
 
     return (
-        <div className={`relative bg-white dark:bg-slate-800 p-4 rounded-xl border-4 shadow-lg transform transition-all duration-300 ${feedbackClasses[scannerStatus]} ${animationClass}`}>
+        <div className={`relative bg-white dark:bg-slate-800 p-4 rounded-xl border-4 transform transition-all duration-300 ${feedbackClasses[scannerStatus]} ${animationClass}`}>
             <div id="reader" className="w-full rounded-lg overflow-hidden"></div>
-             {scannerStatus === 'error' && (
-                <div className="absolute inset-4 flex items-center justify-center bg-black/30 rounded-lg">
-                    <div className="text-center py-2 px-4 bg-red-600 rounded-md shadow-lg">
-                        <p className="text-white font-bold text-base">Invalid QR Code</p>
-                    </div>
-                </div>
-            )}
             <p className="text-slate-500 dark:text-slate-400 text-sm mt-2 text-center">Place the QR code inside the box</p>
         </div>
     );

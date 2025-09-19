@@ -1,5 +1,7 @@
-import { GoogleGenAI } from "@google/genai";
-import type { Course } from '../types';
+
+
+import { GoogleGenAI, Type } from "@google/genai";
+import type { Course, AtRiskStudent } from '../types';
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
@@ -101,5 +103,151 @@ export const getAIAssistedCatchUpPlan = async (courseName: string, sessionDate: 
     } catch (error) {
         console.error("Error fetching AI catch-up plan:", error);
         throw new Error("Failed to get a catch-up plan from the AI. Please check your connection or API key.");
+    }
+};
+
+export const getAtRiskStudents = async (course: Course): Promise<AtRiskStudent[]> => {
+    if (!process.env.API_KEY) {
+        throw new Error("API key is not configured.");
+    }
+
+    const model = "gemini-2.5-flash";
+    const recentSessions = course.sessions.slice(-5).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    const studentAttendanceData = course.students.map(student => {
+        const attendance = recentSessions.map(session => {
+            const record = course.attendance.find(a => a.sessionId === session.id && a.studentId === student.id);
+            return record?.status || 'Absent';
+        });
+        return { studentId: student.id, studentName: student.name, attendance };
+    });
+
+    const prompt = `
+        You are an expert educational analyst. Analyze the attendance data for the course "${course.name}".
+        The data is a list of students and their attendance status ('Present' or 'Absent') for the last ${recentSessions.length} sessions, ordered from most recent to oldest.
+
+        Identify up to 5 students who are most at risk of falling behind based on their attendance. Prioritize students with multiple recent consecutive absences or a clear downward trend in attendance.
+        
+        For each student you identify, provide their studentId, studentName, and a concise, one-sentence reason for flagging them.
+
+        Here is the attendance data:
+        ${JSON.stringify(studentAttendanceData, null, 2)}
+    `;
+
+    try {
+        const response = await ai.models.generateContent({
+            model,
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: Type.ARRAY,
+                    items: {
+                        type: Type.OBJECT,
+                        properties: {
+                            studentId: { type: Type.STRING },
+                            studentName: { type: Type.STRING },
+                            reason: { type: Type.STRING },
+                        },
+                        required: ["studentId", "studentName", "reason"],
+                    },
+                },
+            },
+        });
+        
+        const jsonText = response.text.trim();
+        const result = JSON.parse(jsonText);
+        return result as AtRiskStudent[];
+    } catch (error) {
+        console.error("Error fetching at-risk students:", error);
+        throw new Error("Failed to get analysis from the AI. Please check your connection or API key.");
+    }
+};
+
+
+export const generateOutreachEmail = async (studentName: string, courseName: string, reason: string): Promise<string> => {
+    if (!process.env.API_KEY) {
+        throw new Error("API key is not configured.");
+    }
+
+    const model = "gemini-2.5-flash";
+
+    const prompt = `
+        You are a caring and supportive university instructor. Write a short, positive, and encouraging email template to a student named "${studentName}" who is enrolled in your course "${courseName}".
+
+        The reason for reaching out is that you've noticed their recent attendance has been slipping. The specific pattern observed is: "${reason}".
+
+        The email should:
+        - Be friendly and not accusatory.
+        - Express concern for their well-being.
+        - Gently mention you've missed them in class recently.
+        - Offer support and invite them to office hours or to reply to the email if they're facing challenges.
+        - Keep it brief, around 3-4 sentences.
+
+        Start the email with 'Subject: Checking in from ${courseName}' and then 'Hi ${studentName},'.
+        Do not include a sign-off like 'Best regards, Dr. Admin'.
+    `;
+
+    try {
+        const response = await ai.models.generateContent({
+            model,
+            contents: prompt,
+        });
+        return response.text;
+    } catch (error) {
+        console.error("Error generating outreach email:", error);
+        throw new Error("Failed to generate the email from the AI. Please try again.");
+    }
+};
+
+export const generateLearningPath = async (courseName: string, studentName: string, attendancePercentage: number): Promise<string> => {
+    if (!process.env.API_KEY) {
+        throw new Error("API key is not configured.");
+    }
+
+    const model = "gemini-2.5-flash";
+
+    const isHighPerformer = attendancePercentage >= 85;
+    const studentStatus = isHighPerformer ? "has excellent attendance" : "has low attendance";
+    const goal = isHighPerformer
+        ? "suggest two distinct, challenging, and rewarding enrichment activities or advanced topics to help them dive deeper into the subject."
+        : "suggest two distinct, focused, and actionable catch-up resources or exercises to help them get back on track.";
+
+    const prompt = `
+        You are an expert academic advisor creating a personalized learning path for a student named "${studentName}" in your "${courseName}" course.
+        This student ${studentStatus} with an overall attendance of ${attendancePercentage}%.
+
+        Your task is to ${goal}
+
+        For each suggestion:
+        1.  Provide a clear, bolded title using markdown (e.g., **Title**).
+        2.  Follow it with a brief, encouraging, one or two-sentence description of the activity or resource.
+
+        Your tone should be supportive and motivational.
+
+        Example format for a high-performer:
+        **Deep Dive: The Ethics of AI**
+        Explore the ethical implications of artificial intelligence, a topic we only touched on briefly. A great starting point is the documentary "Coded Bias" available on Netflix.
+
+        **Project Idea: Build a Neural Network**
+        Challenge yourself by building a simple neural network from scratch to classify images. There are excellent tutorials on YouTube by 3Blue1Brown to guide you.
+
+        Example format for a student needing support:
+        **Review Key Concepts: Data Structures**
+        Let's solidify the fundamentals. Spend 20 minutes reviewing how arrays and linked lists work using the interactive visualizations on Visualgo.net.
+
+        **Practice Problems: Big O Notation**
+        Complete five practice problems on Big O notation on a platform like HackerRank. This will build your confidence in analyzing algorithm efficiency.
+    `;
+
+    try {
+        const response = await ai.models.generateContent({
+            model,
+            contents: prompt,
+        });
+        return response.text;
+    } catch (error) {
+        console.error("Error generating learning path:", error);
+        throw new Error("Failed to generate the learning path from the AI. Please try again.");
     }
 };
