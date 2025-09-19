@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect } from 'react';
 import type { Course, Student, Session } from '../types';
 import QRCodeModal from './QRCodeModal';
@@ -8,7 +9,8 @@ import { QR_CODE_VALIDITY_SECONDS } from '../hooks/useAttendanceData';
 interface CourseManagerProps {
     courses: Course[];
     allStudents: Student[];
-    createNewSession: (courseId: string, type: 'Online' | 'Offline', limit: number, livenessCheck: boolean) => { sessionId: string; qrCodeValue: string; shortCode?: string };
+    // FIX: Changed return type to a Promise to match the async function from the hook
+    createNewSession: (courseId: string, type: 'Online' | 'Offline', limit: number, livenessCheck: boolean) => Promise<{ sessionId: string; qrCodeValue: string; shortCode?: string }>;
     toggleAttendance: (studentId: string, sessionId: string, courseId: string) => void;
     regenerateQrCode: (sessionId: string) => void;
     enrollStudent: (courseId: string, studentId: string) => void;
@@ -69,14 +71,16 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
     }, [isModalOpen, activeSessionId, regenerateQrCode]);
 
 
-    const handleStartSession = () => {
+    // FIX: Made function async to handle promise from createNewSession
+    const handleStartSession = async () => {
         if (selectedCourseId) {
             if (limit <= 0) {
                 alert('Please enter a valid limit greater than 0.');
                 return;
             }
             const isLivenessActive = sessionType === 'Online' && livenessCheckEnabled;
-            const { sessionId } = createNewSession(selectedCourseId, sessionType, limit, isLivenessActive);
+            // FIX: Awaited the async function call
+            const { sessionId } = await createNewSession(selectedCourseId, sessionType, limit, isLivenessActive);
             setActiveSessionId(sessionId);
             setIsModalOpen(true);
         }

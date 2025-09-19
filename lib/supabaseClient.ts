@@ -1,3 +1,4 @@
+
 import { createClient } from '@supabase/supabase-js';
 import type { UserRole } from '../types';
 
@@ -7,6 +8,7 @@ const supabaseAnonKey: string = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOi
 // FIX: Added a comprehensive Database interface to provide strong typing for the Supabase client.
 // This resolves numerous TypeScript errors where data types were inferred as `never`,
 // by correctly defining the schema for all tables used in the application.
+// FIX: Corrected column names to use snake_case to match database schema conventions.
 export interface Database {
   public: {
     Tables: {
@@ -33,9 +35,9 @@ export interface Database {
         Update: { name?: string; code?: string; };
       },
       students: {
-        Row: { id: string; name: string; anonymizedName: string; };
-        Insert: { id: string; name: string; anonymizedName: string; };
-        Update: { name?: string; anonymizedName?: string; };
+        Row: { id: string; name: string; anonymized_name: string; };
+        Insert: { id: string; name: string; anonymized_name: string; };
+        Update: { name?: string; anonymized_name?: string; };
       },
       enrollments: {
         Row: { course_id: string; student_id: string; };
@@ -43,14 +45,14 @@ export interface Database {
         Update: {};
       },
       sessions: {
-        Row: { id: string; course_id: string; date: string; type: 'Online' | 'Offline'; limit: number; scannedCount: number; qrCodeValue: string | null; };
-        Insert: { id: string; course_id: string; date: string; type: 'Online' | 'Offline'; limit: number; scannedCount: number; qrCodeValue: string | null; };
-        Update: { date?: string; type?: 'Online' | 'Offline'; limit?: number; scannedCount?: number; qrCodeValue?: string | null; };
+        Row: { id: string; course_id: string; date: string; type: 'Online' | 'Offline'; limit: number | null; scanned_count: number | null; qr_code_value: string | null; short_code: string | null; liveness_check: boolean | null; };
+        Insert: { id: string; course_id: string; date: string; type: 'Online' | 'Offline'; limit?: number | null; scanned_count?: number | null; qr_code_value?: string | null; short_code?: string | null; liveness_check?: boolean | null; };
+        Update: { date?: string; type?: 'Online' | 'Offline'; limit?: number | null; scanned_count?: number | null; qr_code_value?: string | null; short_code?: string | null; liveness_check?: boolean | null; };
       },
       attendance_records: {
-        Row: { student_id: string; session_id: string; status: 'Present' | 'Absent'; };
-        Insert: { student_id: string; session_id: string; status: 'Present' | 'Absent'; };
-        Update: { status?: 'Present' | 'Absent'; };
+        Row: { student_id: string; session_id: string; status: 'Present' | 'Absent'; liveness_data: string | null; };
+        Insert: { student_id: string; session_id: string; status: 'Present' | 'Absent'; liveness_data?: string | null; };
+        Update: { status?: 'Present' | 'Absent'; liveness_data?: string | null; };
       }
     }
     Views: {

@@ -11,7 +11,8 @@ import { ICONS } from '../constants';
 interface StudentViewProps {
     user: User;
     onLogout: () => void;
-    markAttendance: (code: string, studentId: string, selfieData?: string) => MarkAttendanceResult;
+    // FIX: Changed return type to a Promise to match the async function from the hook
+    markAttendance: (code: string, studentId: string, selfieData?: string) => Promise<MarkAttendanceResult>;
     courses: Course[];
 }
 
@@ -40,7 +41,8 @@ const StudentView: React.FC<StudentViewProps> = ({ user, onLogout, markAttendanc
     const [view, setView] = useState<StudentPortalView>('attendance');
     const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'synced'>('idle');
 
-    const syncPendingAttendance = useCallback(() => {
+    // FIX: Made function async and used a for...of loop to correctly handle promises
+    const syncPendingAttendance = useCallback(async () => {
         const pendingRaw = localStorage.getItem('pendingAttendance');
         if (!pendingRaw) return;
 
@@ -58,12 +60,12 @@ const StudentView: React.FC<StudentViewProps> = ({ user, onLogout, markAttendanc
         setSyncStatus('syncing');
 
         let successCount = 0;
-        records.forEach(record => {
-            const result = markAttendance(record.code, record.studentId, record.selfieData);
+        for (const record of records) {
+            const result = await markAttendance(record.code, record.studentId, record.selfieData);
             if (result === 'success' || result === 'already_marked') {
                 successCount++;
             }
-        });
+        }
 
         localStorage.removeItem('pendingAttendance');
 

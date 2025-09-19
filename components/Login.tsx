@@ -2,21 +2,23 @@ import React, { useState, useEffect } from 'react';
 import type { UserRole } from '../types';
 
 interface LoginProps {
-    onLogin: (username: string, password: string, role: UserRole, rememberMe: boolean) => string | null;
-    onForgotPassword: (email: string) => string | null;
+    onLogin: (email: string, password: string, role: UserRole) => Promise<string | null>;
+    onSignUp: (name: string, email: string, password: string, role: UserRole) => Promise<string | null>;
+    onForgotPassword: (email: string) => Promise<string | null>;
 }
 
-
-const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
+const Login: React.FC<LoginProps> = ({ onLogin, onSignUp, onForgotPassword }) => {
     const [mode, setMode] = useState<'select' | 'faculty' | 'student' | 'forgot'>('select');
+    const [formMode, setFormMode] = useState<'signin' | 'signup'>('signin');
     const [previousLoginMode, setPreviousLoginMode] = useState<'faculty' | 'student'>('faculty');
+    const [name, setName] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [rememberMe, setRememberMe] = useState(false);
     const [loading, setLoading] = useState(false);
     const [resetEmail, setResetEmail] = useState('');
     const [infoMessage, setInfoMessage] = useState('');
     const [formErrors, setFormErrors] = useState<{
+        name?: string;
         username?: string;
         password?: string;
         captcha?: string;
@@ -24,7 +26,6 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
         resetEmail?: string;
     }>({});
     
-    // CAPTCHA state
     const [captchaNum1, setCaptchaNum1] = useState(0);
     const [captchaNum2, setCaptchaNum2] = useState(0);
     const [captchaAnswer, setCaptchaAnswer] = useState('');
@@ -36,11 +37,12 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
     };
     
     const resetFormState = () => {
+        setName('');
         setUsername('');
         setPassword('');
-        setRememberMe(false);
         setFormErrors({});
         setInfoMessage('');
+        setFormMode('signin');
         setCaptchaAnswer('');
         generateCaptcha();
     };
@@ -68,6 +70,11 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
         const newErrors: typeof formErrors = {};
         let hasError = false;
 
+        if (formMode === 'signup' && name.trim().length < 2) {
+            newErrors.name = 'Please enter your full name.';
+            hasError = true;
+        }
+
         if (!validateEmail(username)) {
             newErrors.username = 'Please enter a valid email address.';
             hasError = true;
@@ -86,12 +93,9 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
         setFormErrors(newErrors);
 
         if (hasError) {
-            if (newErrors.captcha) {
-                generateCaptcha();
-            }
+            if (newErrors.captcha) generateCaptcha();
             return;
         }
-
 
         setLoading(true);
 
@@ -100,15 +104,22 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
             return;
         }
         
-        // Simulate network delay for better UX
-        setTimeout(() => {
-            const errorMessage = onLogin(username, password, mode, rememberMe);
+        const action = formMode === 'signin'
+            ? onLogin(username, password, mode)
+            : onSignUp(name, username, password, mode);
+
+        action.then(errorMessage => {
             if (errorMessage) {
                 setFormErrors({ general: errorMessage });
                 generateCaptcha();
             }
+            // On successful signup, maybe switch to signin mode with a message
+            else if (formMode === 'signup') {
+                setInfoMessage('Account created successfully! You are now being logged in.');
+                // The onAuthStateChange listener in App.tsx will handle the redirect.
+            }
             setLoading(false);
-        }, 500);
+        });
     };
 
     const handleForgotPasswordSubmit = (e: React.FormEvent) => {
@@ -131,26 +142,18 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
         setFormErrors(newErrors);
 
         if (hasError) {
-            if (newErrors.captcha) {
-                generateCaptcha();
-            }
+            if (newErrors.captcha) generateCaptcha();
             return;
         }
 
-
         setLoading(true);
 
-        // Simulate network delay for better UX
-        setTimeout(() => {
-            const resultMessage = onForgotPassword(resetEmail);
+        onForgotPassword(resetEmail).then(resultMessage => {
             setLoading(false);
-            if (resultMessage) {
-                setInfoMessage(resultMessage);
-            }
+            if (resultMessage) setInfoMessage(resultMessage);
             setResetEmail('');
             generateCaptcha();
-        }, 500);
-
+        });
     };
 
     if (mode === 'select') {
@@ -229,7 +232,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
                         </div>
                     </form>
                     <div className="text-center">
-                        <button onClick={() => setMode(previousLoginMode)} className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:underline disabled:text-slate-600" disabled={loading}>
+                        <button onClick={() => { setMode(previousLoginMode); resetFormState(); }} className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:underline disabled:text-slate-600" disabled={loading}>
                            &larr; Back to Login
                         </button>
                     </div>
@@ -240,9 +243,9 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
 
     const title = mode === 'faculty' ? 'Faculty' : 'Student';
     const accentColor = mode === 'faculty' ? 'indigo' : 'sky';
-    const formTitle = `${title} Sign In`;
-    const buttonTitle = 'Login';
-    const loadingText = 'Logging in...';
+    const formTitle = `${title} ${formMode === 'signin' ? 'Sign In' : 'Sign Up'}`;
+    const buttonTitle = formMode === 'signin' ? 'Login' : 'Create Account';
+    const loadingText = formMode === 'signin' ? 'Logging in...' : 'Creating Account...';
 
     return (
         <div className="flex items-center justify-center h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white">
@@ -255,10 +258,20 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
                         {formTitle}
                     </div>
                     <p className="text-slate-500 dark:text-slate-400">
-                        Sign in to continue.
+                        {formMode === 'signin' ? 'Sign in to continue.' : 'Create an account to get started.'}
                     </p>
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-6">
+                    {formMode === 'signup' && (
+                        <div>
+                            <label htmlFor="name" className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Full Name</label>
+                            <input id="name" name="name" type="text" autoComplete="name" required value={name}
+                                onChange={(e) => { setName(e.target.value); setFormErrors(prev => ({...prev, name: undefined, general: undefined})); }}
+                                className={`w-full px-3 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-${accentColor}-500 focus:border-${accentColor}-500`}
+                                placeholder="e.g., John Doe" />
+                            {formErrors.name && <p className="mt-2 text-xs text-red-500">{formErrors.name}</p>}
+                        </div>
+                    )}
                     <div>
                         <label htmlFor="username" className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Email Address</label>
                         <input id="username" name="username" type="email" autoComplete="email" required value={username}
@@ -269,11 +282,8 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
                     </div>
                     <div>
                         <label htmlFor="password"className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Password</label>
-                        <input id="password" name="password" type="password" autoComplete={'current-password'} required value={password}
-                            onChange={(e) => { 
-                                setPassword(e.target.value);
-                                setFormErrors(prev => ({...prev, password: undefined, general: undefined}));
-                            }}
+                        <input id="password" name="password" type="password" autoComplete={formMode === 'signin' ? 'current-password' : 'new-password'} required value={password}
+                            onChange={(e) => { setPassword(e.target.value); setFormErrors(prev => ({...prev, password: undefined, general: undefined})); }}
                             className={`w-full px-3 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-${accentColor}-500 focus:border-${accentColor}-500`}
                             placeholder="••••••••" />
                         {formErrors.password && <p className="mt-2 text-xs text-red-500">{formErrors.password}</p>}
@@ -287,27 +297,15 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
                          {formErrors.captcha && <p className="mt-2 text-xs text-red-500">{formErrors.captcha}</p>}
                     </div>
                     
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                            <input
-                                id="remember-me"
-                                name="remember-me"
-                                type="checkbox"
-                                checked={rememberMe}
-                                onChange={(e) => setRememberMe(e.target.checked)}
-                                className={`h-4 w-4 rounded text-${accentColor}-600 focus:ring-${accentColor}-500 border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-700`}
-                            />
-                            <label htmlFor="remember-me" className="ml-2 block text-sm text-slate-600 dark:text-slate-300">
-                                Remember me
-                            </label>
+                    {formMode === 'signin' && (
+                        <div className="flex items-center justify-end">
+                            <div className="text-sm">
+                                <button type="button" onClick={() => { if(mode === 'faculty' || mode === 'student') setPreviousLoginMode(mode); setMode('forgot'); }} className={`font-medium text-${accentColor}-600 hover:text-${accentColor}-500 dark:text-${accentColor}-400 dark:hover:text-${accentColor}-300 focus:outline-none focus:underline`}>
+                                    Forgot password?
+                                </button>
+                            </div>
                         </div>
-                        <div className="text-sm">
-                            <button type="button" onClick={() => { if(mode === 'faculty' || mode === 'student') setPreviousLoginMode(mode); setMode('forgot'); }} className={`font-medium text-${accentColor}-600 hover:text-${accentColor}-500 dark:text-${accentColor}-400 dark:hover:text-${accentColor}-300 focus:outline-none focus:underline`}>
-                                Forgot password?
-                            </button>
-                        </div>
-                    </div>
-
+                    )}
 
                     {formErrors.general && <div className="p-3 bg-red-500/20 text-red-400 dark:text-red-300 rounded-md text-sm font-medium text-center">{formErrors.general}</div>}
                     {infoMessage && <div className="p-3 bg-sky-500/20 text-sky-700 dark:text-sky-300 rounded-md text-sm font-medium text-center">{infoMessage}</div>}
@@ -318,6 +316,13 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
                         </button>
                     </div>
                 </form>
+
+                <div className="text-sm text-center text-slate-500 dark:text-slate-400">
+                    {formMode === 'signin' ? "Don't have an account?" : "Already have an account?"}
+                    <button onClick={() => setFormMode(formMode === 'signin' ? 'signup' : 'signin')} className={`ml-1 font-medium text-${accentColor}-600 hover:text-${accentColor}-500 dark:text-${accentColor}-400 dark:hover:text-${accentColor}-300 focus:outline-none focus:underline`}>
+                        {formMode === 'signin' ? "Sign Up" : "Sign In"}
+                    </button>
+                </div>
 
                 <div className="text-center">
                     <button onClick={handleBackToSelect} className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:underline disabled:text-slate-600" disabled={loading}>

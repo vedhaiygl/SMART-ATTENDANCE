@@ -6,7 +6,8 @@ import LivenessCheckModal from './LivenessCheckModal';
 
 interface StudentScanPageProps {
     user: User;
-    markAttendance: (code: string, studentId: string, selfieData?: string) => MarkAttendanceResult;
+    // FIX: Changed return type to a Promise to match the async function from the hook
+    markAttendance: (code: string, studentId: string, selfieData?: string) => Promise<MarkAttendanceResult>;
 }
 
 const StudentScanPage: React.FC<StudentScanPageProps> = ({ user, markAttendance }) => {
@@ -76,7 +77,8 @@ const StudentScanPage: React.FC<StudentScanPageProps> = ({ user, markAttendance 
         }
     };
     
-    const submitAttendance = (code: string, selfieData?: string) => {
+    // FIX: Made function async to handle promise from markAttendance
+    const submitAttendance = async (code: string, selfieData?: string) => {
         if (!navigator.onLine) {
             try {
                 const pendingRaw = localStorage.getItem('pendingAttendance');
@@ -100,7 +102,7 @@ const StudentScanPage: React.FC<StudentScanPageProps> = ({ user, markAttendance 
             return;
         }
 
-        const result = markAttendance(code, user.id, selfieData);
+        const result = await markAttendance(code, user.id, selfieData);
         processAttendanceResult(result, code);
     };
 

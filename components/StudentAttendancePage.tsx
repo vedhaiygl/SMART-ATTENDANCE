@@ -1,3 +1,4 @@
+
 import React, { useMemo, useState, useRef, useEffect } from 'react';
 import type { User, Course, Session } from '../types';
 import { getAIAssistedCatchUpPlan, generateLearningPath } from '../lib/gemini';
