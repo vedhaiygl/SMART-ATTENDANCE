@@ -1,4 +1,5 @@
 
+
 export interface Student {
   id: string;
   name: string;
@@ -23,6 +24,22 @@ export interface AttendanceRecord {
   livenessData?: string; // base64 data URI for selfie
 }
 
+export interface LiveClassAttendee {
+  studentId: string;
+  joinTime: string; // ISO string
+  leaveTime: string | null; // ISO string
+  durationMinutes: number;
+}
+
+export interface LiveClass {
+  id: string;
+  courseId: string;
+  status: 'live' | 'ended';
+  startTime: string; // ISO string
+  endTime: string | null; // ISO string
+  attendees: LiveClassAttendee[];
+}
+
 export interface Course {
   id: string;
   name: string;
@@ -30,9 +47,11 @@ export interface Course {
   students: Student[];
   sessions: Session[];
   attendance: AttendanceRecord[];
+  liveClasses: LiveClass[];
 }
 
-export type ViewType = 'dashboard' | 'courses' | 'analytics';
+export type FacultyViewType = 'dashboard' | 'courses' | 'analytics';
+export type StudentViewType = 'liveClasses' | 'attendance' | 'scan' | 'leaderboard' | 'calendar' | 'studyBuddy';
 
 export type UserRole = 'faculty' | 'student';
 
@@ -57,4 +76,9 @@ export interface PendingAttendanceRecord {
   studentId: string;
   selfieData?: string;
   timestamp: number;
+}
+
+export interface ChatMessage {
+    role: 'user' | 'model';
+    text: string;
 }

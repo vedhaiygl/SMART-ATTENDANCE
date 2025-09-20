@@ -1,10 +1,10 @@
 import React from 'react';
-import type { ViewType } from '../types';
+import type { FacultyViewType } from '../types';
 import { ICONS } from '../constants';
 
 interface SidebarProps {
-  view: ViewType;
-  setView: (view: ViewType) => void;
+  view: FacultyViewType;
+  setView: (view: FacultyViewType) => void;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -29,7 +29,7 @@ const NavItem: React.FC<{
 );
 
 const Sidebar: React.FC<SidebarProps> = ({ view, setView, isOpen, onClose }) => {
-    const handleSetView = (newView: ViewType) => {
+    const handleSetView = (newView: FacultyViewType) => {
         setView(newView);
         onClose();
     };

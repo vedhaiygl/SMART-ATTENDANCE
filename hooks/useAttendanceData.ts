@@ -1,7 +1,6 @@
-
 import { useState, useCallback, useEffect } from 'react';
-import type { Course, Student, Session, AttendanceRecord, MarkAttendanceResult, User } from '../types';
-import { supabase } from '../lib/supabaseClient';
+import type { Course, Student, Session, AttendanceRecord, MarkAttendanceResult, User, LiveClass, LiveClassAttendee } from '../types';
+import { MOCK_COURSES, MOCK_STUDENTS } from '../lib/mockData';
 
 const generateQrCodeValue = () => `qr_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 export const QR_CODE_VALIDITY_SECONDS = 60;
@@ -21,89 +20,23 @@ export const useAttendanceData = (user: User | null) => {
   const [allStudents, setAllStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const loadData = useCallback(async () => {
-    setLoading(true);
-    try {
-        const { data: coursesData, error: coursesError } = await supabase.from('courses').select('*');
-        if (coursesError) throw coursesError;
-
-        const { data: studentsData, error: studentsError } = await supabase.from('students').select('*');
-        if (studentsError) throw studentsError;
-
-        const { data: sessionsData, error: sessionsError } = await supabase.from('sessions').select('*');
-        if (sessionsError) throw sessionsError;
-
-        const { data: attendanceData, error: attendanceError } = await supabase.from('attendance_records').select('*');
-        if (attendanceError) throw attendanceError;
-
-        const { data: enrollmentsData, error: enrollmentsError } = await supabase.from('enrollments').select('*');
-        if (enrollmentsError) throw enrollmentsError;
-        
-        // FIX: Map Supabase snake_case data to application camelCase data model (Student)
-        const mappedStudents: Student[] = studentsData.map(s => ({
-            id: s.id,
-            name: s.name,
-            anonymizedName: s.anonymized_name,
-        }));
-        const studentsMap = new Map(mappedStudents.map(s => [s.id, s]));
-
-        const transformedCourses = coursesData.map(course => {
-            const courseStudentIds = enrollmentsData
-                .filter(e => e.course_id === course.id)
-                .map(e => e.student_id);
-
-            const courseStudents = courseStudentIds
-                .map(id => studentsMap.get(id))
-                .filter((s): s is Student => s !== undefined);
-
-            // FIX: Map Supabase snake_case data to application camelCase data model (Session)
-            const courseSessions: Session[] = sessionsData
-                .filter(s => s.course_id === course.id)
-                .map(s => ({
-                    id: s.id,
-                    date: s.date,
-                    type: s.type,
-                    limit: s.limit ?? undefined,
-                    scannedCount: s.scanned_count ?? 0,
-                    qrCodeValue: s.qr_code_value ?? undefined,
-                    shortCode: s.short_code ?? undefined,
-                    livenessCheck: s.liveness_check ?? false,
-                }));
-
-            const courseSessionIds = new Set(courseSessions.map(s => s.id));
-            
-            // FIX: Map Supabase snake_case data to application camelCase data model (AttendanceRecord)
-            const courseAttendance: AttendanceRecord[] = attendanceData
-                .filter(a => courseSessionIds.has(a.session_id))
-                .map(a => ({
-                    studentId: a.student_id,
-                    sessionId: a.session_id,
-                    status: a.status,
-                    livenessData: a.liveness_data ?? undefined,
-                }));
-
-
-            return {
-                ...course,
-                students: courseStudents,
-                sessions: courseSessions,
-                attendance: courseAttendance,
-            };
-        });
-        
-        setAllStudents(mappedStudents);
-        setCourses(transformedCourses);
-
-    } catch (error) {
-        console.error("Error loading data from Supabase:", error);
-    } finally {
-        setLoading(false);
-    }
+  const loadData = useCallback(() => {
+    // Deep copy to prevent mutation issues between different components/renders
+    const coursesCopy = JSON.parse(JSON.stringify(MOCK_COURSES));
+    const studentsCopy = JSON.parse(JSON.stringify(MOCK_STUDENTS));
+    setCourses(coursesCopy);
+    setAllStudents(studentsCopy);
+    setLoading(false);
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     if (user) {
-      loadData();
+      // Simulate async loading for better UX
+      const timer = setTimeout(() => {
+          loadData();
+      }, 500);
+      return () => clearTimeout(timer);
     } else {
       setCourses([]);
       setAllStudents([]);
@@ -111,46 +44,54 @@ export const useAttendanceData = (user: User | null) => {
     }
   }, [user, loadData]);
 
-  const createNewSession = useCallback(async (courseId: string, type: 'Online' | 'Offline', limit: number, livenessCheck: boolean): Promise<{ sessionId: string; qrCodeValue: string; shortCode?: string }> => {
-    const course = courses.find(c => c.id === courseId);
-    if (!course) throw new Error("Course not found");
-
-    const initialQrCodeValue = generateQrCodeValue();
+  const createNewSession = useCallback((courseId: string, type: 'Online' | 'Offline', limit: number, livenessCheck: boolean): { sessionId: string; qrCodeValue: string; shortCode?: string } => {
+    const qrCodeValue = generateQrCodeValue();
     const shortCode = type === 'Online' ? generateShortCode() : undefined;
-    
-    // FIX: Use snake_case for Supabase insert
-    const newSessionData = {
-      id: `${courseId}-session-${Date.now()}`,
-      course_id: courseId,
-      date: new Date().toISOString(),
-      type,
-      limit,
-      scanned_count: 0,
-      qr_code_value: initialQrCodeValue,
-      short_code: shortCode,
-      liveness_check: type === 'Online' ? livenessCheck : false,
+    const sessionId = `${courseId}-session-${Date.now()}`;
+
+    const newSession: Session = {
+        id: sessionId,
+        date: new Date().toISOString(),
+        type: type,
+        limit: limit,
+        scannedCount: 0,
+        qrCodeValue: qrCodeValue,
+        shortCode: shortCode,
+        livenessCheck: type === 'Online' ? livenessCheck : false,
     };
     
-    const { error: sessionError } = await supabase.from('sessions').insert(newSessionData);
-    if(sessionError) throw sessionError;
+    let targetCourse: Course | undefined;
     
-    const newAttendanceRecords = course.students.map(student => ({
-      student_id: student.id,
-      session_id: newSessionData.id,
-      status: 'Absent' as const,
-    }));
-    
-    if (newAttendanceRecords.length > 0) {
-        const { error: attendanceError } = await supabase.from('attendance_records').insert(newAttendanceRecords);
-        if (attendanceError) throw attendanceError;
-    }
-    
-    await loadData(); // Refresh data
+    setCourses(prevCourses => {
+        const newCourses = prevCourses.map(c => ({
+            ...c,
+            students: [...c.students],
+            sessions: [...c.sessions],
+            attendance: [...c.attendance],
+            liveClasses: [...c.liveClasses],
+        }));
 
-    return { sessionId: newSessionData.id, qrCodeValue: initialQrCodeValue, shortCode };
-  }, [courses, loadData]);
+        const courseIndex = newCourses.findIndex(c => c.id === courseId);
+        if (courseIndex === -1) throw new Error("Course not found");
 
-  const markAttendance = useCallback(async (code: string, studentId: string, selfieData?: string): Promise<MarkAttendanceResult> => {
+        targetCourse = newCourses[courseIndex];
+        targetCourse.sessions.push(newSession);
+        
+        const newAttendanceRecords = targetCourse.students.map(student => ({
+          studentId: student.id,
+          sessionId: sessionId,
+          status: 'Absent' as const,
+        }));
+        
+        targetCourse.attendance.push(...newAttendanceRecords);
+
+        return newCourses;
+    });
+
+    return { sessionId, qrCodeValue, shortCode };
+  }, []);
+
+  const markAttendance = useCallback((code: string, studentId: string, selfieData?: string): MarkAttendanceResult => {
     if (code.startsWith('qr_')) {
         const parts = code.split('_');
         if (parts.length >= 2) {
@@ -163,144 +104,219 @@ export const useAttendanceData = (user: User | null) => {
 
     const formattedCode = code.toUpperCase().replace(/\s|-/g, '');
 
-    const { data: sessions, error: sessionError } = await supabase.from('sessions')
-        .select('*')
-        // FIX: Use snake_case column names in query
-        .or(`qr_code_value.eq.${code},short_code.eq.${formattedCode.replace('-', '')}`)
-        .limit(1);
-
-    if (sessionError || !sessions || sessions.length === 0) return 'invalid_qr';
-    
-    const sessionData = sessions[0];
-    // FIX: Use snake_case property
-    if (sessionData.qr_code_value === 'limit_reached') return 'limit_reached';
-
-    const { data: enrollment, error: enrollError } = await supabase.from('enrollments')
-        .select()
-        .eq('course_id', sessionData.course_id)
-        .eq('student_id', studentId)
-        .maybeSingle();
+    const sessionAndCourse = courses.flatMap(c => c.sessions.map(s => ({ session: s, course: c })))
+        .find(({ session }) => session.qrCodeValue === code || (session.shortCode && session.shortCode.replace('-', '') === formattedCode));
         
-    if (enrollError || !enrollment) return 'not_enrolled';
+    if (!sessionAndCourse) return 'invalid_qr';
 
-    // FIX: Use snake_case properties
-    if (sessionData.limit !== undefined && sessionData.limit !== null && (sessionData.scanned_count ?? 0) >= sessionData.limit) {
+    const { session, course } = sessionAndCourse;
+
+    if (session.qrCodeValue === 'limit_reached') return 'limit_reached';
+
+    const isEnrolled = course.students.some(s => s.id === studentId);
+    if (!isEnrolled) return 'not_enrolled';
+
+    if (session.limit && (session.scannedCount ?? 0) >= session.limit) {
       return 'limit_reached';
     }
 
-    const { data: existingRecord, error: recordError } = await supabase.from('attendance_records')
-        .select('status')
-        .eq('session_id', sessionData.id)
-        .eq('student_id', studentId)
-        .single();
-    
-    if (recordError) console.error("Error fetching existing record", recordError);
-    // FIX: Added optional chaining to prevent crash if record is null
+    const existingRecord = course.attendance.find(a => a.sessionId === session.id && a.studentId === studentId);
     if (existingRecord?.status === 'Present') return 'already_marked';
-
-    // FIX: Use snake_case property
-    if (sessionData.type === 'Online' && sessionData.liveness_check && !selfieData) {
+    
+    if (session.type === 'Online' && session.livenessCheck && !selfieData) {
         return 'liveness_required';
     }
 
-    // FIX: Use snake_case property for update
-    const { error: updateError } = await supabase.from('attendance_records')
-        .update({ status: 'Present', liveness_data: selfieData })
-        .eq('session_id', sessionData.id)
-        .eq('student_id', studentId);
-        
-    if (updateError) throw updateError;
-    
-    // FIX: Use snake_case property
-    const newScannedCount = (sessionData.scanned_count ?? 0) + 1;
-    const isLimitReached = sessionData.limit !== undefined && sessionData.limit !== null && newScannedCount >= sessionData.limit;
+    setCourses(prevCourses => {
+        const newCourses = JSON.parse(JSON.stringify(prevCourses));
+        const courseToUpdate = newCourses.find((c: Course) => c.id === course.id);
+        if (!courseToUpdate) return prevCourses;
 
-    // FIX: Use snake_case properties for update
-    const { error: sessionUpdateError } = await supabase.from('sessions')
-        .update({ 
-            scanned_count: newScannedCount, 
-            qr_code_value: isLimitReached ? 'limit_reached' : sessionData.qr_code_value 
-        })
-        .eq('id', sessionData.id);
+        const sessionToUpdate = courseToUpdate.sessions.find((s: Session) => s.id === session.id);
+        const recordToUpdate = courseToUpdate.attendance.find((a: AttendanceRecord) => a.sessionId === session.id && a.studentId === studentId);
+
+        if (!sessionToUpdate || !recordToUpdate) return prevCourses;
+
+        recordToUpdate.status = 'Present';
+        if (selfieData) {
+            recordToUpdate.livenessData = selfieData;
+        }
+
+        sessionToUpdate.scannedCount = (sessionToUpdate.scannedCount ?? 0) + 1;
+        if (sessionToUpdate.limit && sessionToUpdate.scannedCount >= sessionToUpdate.limit) {
+            sessionToUpdate.qrCodeValue = 'limit_reached';
+        }
         
-    if (sessionUpdateError) throw sessionUpdateError;
-    
-    await loadData();
+        return newCourses;
+    });
+
     return 'success';
-  }, [loadData]);
+  }, [courses]);
   
-    const toggleAttendance = useCallback(async (studentId: string, sessionId: string, courseId: string) => {
-        const course = courses.find(c => c.id === courseId);
-        const session = course?.sessions.find(s => s.id === sessionId);
-        const record = course?.attendance.find(a => a.studentId === studentId && a.sessionId === sessionId);
+    const toggleAttendance = useCallback((studentId: string, sessionId: string, courseId: string) => {
+        setCourses(prevCourses => {
+            const newCourses = JSON.parse(JSON.stringify(prevCourses));
+            const course = newCourses.find((c: Course) => c.id === courseId);
+            if (!course) return prevCourses;
 
-        if (!session || !record) return;
+            const session = course.sessions.find((s: Session) => s.id === sessionId);
+            const record = course.attendance.find((a: AttendanceRecord) => a.studentId === studentId && a.sessionId === sessionId);
 
-        const newStatus = record.status === 'Present' ? 'Absent' : 'Present';
-        const newScannedCount = newStatus === 'Present'
-            ? (session.scannedCount ?? 0) + 1
-            : Math.max(0, (session.scannedCount ?? 0) - 1);
-        
-        const { error: recordUpdateError } = await supabase.from('attendance_records').update({ status: newStatus }).match({ student_id: studentId, session_id: sessionId });
-        if (recordUpdateError) throw recordUpdateError;
+            if (!session || !record) return prevCourses;
 
-        // FIX: Use snake_case property for update
-        const { error: sessionUpdateError } = await supabase.from('sessions').update({ scanned_count: newScannedCount }).eq('id', sessionId);
-        if (sessionUpdateError) throw sessionUpdateError;
+            const newStatus = record.status === 'Present' ? 'Absent' : 'Present';
+            record.status = newStatus;
+            
+            session.scannedCount = newStatus === 'Present'
+                ? (session.scannedCount ?? 0) + 1
+                : Math.max(0, (session.scannedCount ?? 0) - 1);
 
-        await loadData();
-    }, [courses, loadData]);
+            return newCourses;
+        });
+    }, []);
 
-    const deleteSession = useCallback(async (courseId: string, sessionId: string) => {
-        const { error: attendanceError } = await supabase.from('attendance_records').delete().eq('session_id', sessionId);
-        if (attendanceError) throw attendanceError;
-        
-        const { error: sessionError } = await supabase.from('sessions').delete().eq('id', sessionId);
-        if (sessionError) throw sessionError;
-        
-        await loadData();
-    }, [loadData]);
+    const deleteSession = useCallback((courseId: string, sessionId: string) => {
+        setCourses(prevCourses => {
+            const newCourses = JSON.parse(JSON.stringify(prevCourses));
+            const course = newCourses.find((c: Course) => c.id === courseId);
+            if (!course) return prevCourses;
 
-    const regenerateQrCode = useCallback(async (sessionId: string) => {
+            course.sessions = course.sessions.filter((s: Session) => s.id !== sessionId);
+            course.attendance = course.attendance.filter((a: AttendanceRecord) => a.sessionId !== sessionId);
+            
+            return newCourses;
+        });
+    }, []);
+
+    const regenerateQrCode = useCallback((sessionId: string) => {
         const newQrCodeValue = generateQrCodeValue();
-        // FIX: Use snake_case property for update
-        const { error } = await supabase.from('sessions').update({ qr_code_value: newQrCodeValue }).eq('id', sessionId);
-        if (error) throw error;
-        // Optimistic update for smoother UX in the modal
         setCourses(prevCourses => prevCourses.map(course => ({
             ...course,
             sessions: course.sessions.map(s => s.id === sessionId ? { ...s, qrCodeValue: newQrCodeValue } : s)
         })));
     }, []);
 
-    const enrollStudent = useCallback(async (courseId: string, studentId: string) => {
-        const course = courses.find(c => c.id === courseId);
-        if (!course) return;
+    const enrollStudent = useCallback((courseId: string, studentId: string) => {
+        setCourses(prevCourses => {
+            const newCourses = JSON.parse(JSON.stringify(prevCourses));
+            const course = newCourses.find((c: Course) => c.id === courseId);
+            const student = allStudents.find(s => s.id === studentId);
+            if (!course || !student) return prevCourses;
+            
+            if(course.students.some((s: Student) => s.id === studentId)) return prevCourses; // Already enrolled
 
-        const { error: enrollError } = await supabase.from('enrollments').insert({ course_id: courseId, student_id: studentId });
-        if (enrollError) {
-             // Ignore primary key violation errors if student is already enrolled
-            if (enrollError.code !== '23505') throw enrollError;
-            else return;
-        }
+            course.students.push(student);
 
-        const newAttendanceRecords = course.sessions.map(session => ({
-            student_id: studentId,
-            session_id: session.id,
-            status: 'Absent' as const,
-        }));
-        
-        if (newAttendanceRecords.length > 0) {
-            const { error: attendanceError } = await supabase.from('attendance_records').insert(newAttendanceRecords);
-            if (attendanceError) throw attendanceError;
-        }
+            const newAttendanceRecords = course.sessions.map((session: Session) => ({
+                studentId: studentId,
+                sessionId: session.id,
+                status: 'Absent' as const,
+            }));
+            
+            course.attendance.push(...newAttendanceRecords);
 
-        await loadData();
-    }, [courses, loadData]);
+            return newCourses;
+        });
+    }, [allStudents]);
 
     const resetData = useCallback(() => {
-        loadData();
-    }, [loadData]);
+        setCourses([]);
+        setAllStudents([]);
+        setLoading(true);
+    }, []);
 
-    return { courses, allStudents, loading, createNewSession, regenerateQrCode, markAttendance, toggleAttendance, deleteSession, resetData, enrollStudent };
+    const startLiveClass = useCallback((courseId: string): LiveClass => {
+      const liveClassId = `live_${courseId}_${Date.now()}`;
+      const newLiveClass: LiveClass = {
+          id: liveClassId,
+          courseId: courseId,
+          status: 'live',
+          startTime: new Date().toISOString(),
+          endTime: null,
+          attendees: [],
+      };
+  
+      setCourses(prevCourses => {
+          const newCourses = JSON.parse(JSON.stringify(prevCourses));
+          const course = newCourses.find((c: Course) => c.id === courseId);
+          if (course) {
+              // End any other live classes for this course
+              course.liveClasses.forEach((lc: LiveClass) => {
+                  if (lc.status === 'live') {
+                      lc.status = 'ended';
+                      lc.endTime = new Date().toISOString();
+                  }
+              });
+              course.liveClasses.push(newLiveClass);
+          }
+          return newCourses;
+      });
+  
+      return newLiveClass;
+    }, []);
+  
+    const endLiveClass = useCallback((courseId: string, liveClassId: string) => {
+        setCourses(prevCourses => {
+            const newCourses = JSON.parse(JSON.stringify(prevCourses));
+            const course = newCourses.find((c: Course) => c.id === courseId);
+            const liveClass = course?.liveClasses.find((lc: LiveClass) => lc.id === liveClassId);
+            if (liveClass && liveClass.status === 'live') {
+                const now = new Date();
+                liveClass.status = 'ended';
+                liveClass.endTime = now.toISOString();
+  
+                // Finalize duration for anyone still "in" the class
+                liveClass.attendees.forEach((attendee: LiveClassAttendee) => {
+                    if (!attendee.leaveTime) {
+                        attendee.leaveTime = now.toISOString();
+                        const joinTime = new Date(attendee.joinTime).getTime();
+                        const durationMs = now.getTime() - joinTime;
+                        attendee.durationMinutes = parseFloat((durationMs / (1000 * 60)).toFixed(2));
+                    }
+                });
+            }
+            return newCourses;
+        });
+    }, []);
+  
+    const studentJoinsLiveClass = useCallback((courseId: string, liveClassId: string, studentId: string) => {
+        setCourses(prevCourses => {
+            const newCourses = JSON.parse(JSON.stringify(prevCourses));
+            const course = newCourses.find((c: Course) => c.id === courseId);
+            const liveClass = course?.liveClasses.find((lc: LiveClass) => lc.id === liveClassId);
+  
+            if (liveClass && liveClass.status === 'live') {
+                const existingAttendee = liveClass.attendees.find((a: LiveClassAttendee) => a.studentId === studentId);
+                if (!existingAttendee) {
+                  liveClass.attendees.push({
+                      studentId: studentId,
+                      joinTime: new Date().toISOString(),
+                      leaveTime: null,
+                      durationMinutes: 0,
+                  });
+                }
+            }
+            return newCourses;
+        });
+    }, []);
+  
+    const studentLeavesLiveClass = useCallback((courseId: string, liveClassId: string, studentId: string) => {
+        setCourses(prevCourses => {
+            const newCourses = JSON.parse(JSON.stringify(prevCourses));
+            const course = newCourses.find((c: Course) => c.id === courseId);
+            const liveClass = course?.liveClasses.find((lc: LiveClass) => lc.id === liveClassId);
+            const attendee = liveClass?.attendees.find((a: LiveClassAttendee) => a.studentId === studentId && !a.leaveTime);
+  
+            if (attendee) {
+                const now = new Date();
+                attendee.leaveTime = now.toISOString();
+                const joinTime = new Date(attendee.joinTime).getTime();
+                const durationMs = now.getTime() - joinTime;
+                attendee.durationMinutes = parseFloat((durationMs / (1000 * 60)).toFixed(2));
+            }
+            return newCourses;
+        });
+    }, []);
+
+    return { courses, allStudents, loading, createNewSession, regenerateQrCode, markAttendance, toggleAttendance, deleteSession, resetData, enrollStudent, startLiveClass, endLiveClass, studentJoinsLiveClass, studentLeavesLiveClass };
 };

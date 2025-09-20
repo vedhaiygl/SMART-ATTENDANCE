@@ -1,4 +1,3 @@
-
 import React, { useState, createContext, useContext, useEffect, useMemo } from 'react';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -8,10 +7,9 @@ import Analytics from './components/Analytics';
 import Login from './components/Login';
 import StudentView from './components/StudentView';
 import { useAttendanceData } from './hooks/useAttendanceData';
-import type { ViewType, User, UserRole } from './types';
+import type { FacultyViewType, User, UserRole } from './types';
 import LoadingScreen from './components/LoadingScreen';
 import SplashScreen from './components/SplashScreen';
-import { supabase } from './lib/supabaseClient';
 
 // THEME MANAGEMENT
 type Theme = 'light' | 'dark';
@@ -48,126 +46,74 @@ const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 };
 
-const anonymizeName = (name: string): string => {
-    const parts = name.trim().split(/\s+/);
-    if (parts.length > 1) {
-        return `${parts[0]} ${parts[parts.length - 1].charAt(0)}.`;
-    }
-    return name;
-};
+const MOCK_USERS: User[] = [
+    { id: 'faculty-1', name: 'Dr. Admin', email: 'faculty@university.edu', role: 'faculty' },
+    { id: 'student-1', name: 'Vedhan', email: 'vedhanmail@gmail.com', role: 'student' },
+    { id: 'student-2', name: 'Mithun', email: 'mithunk@gmail.com', role: 'student' },
+    { id: 'student-3', name: 'Sanjeevi', email: 'sanjeevi@gmail.com', role: 'student' },
+];
 
 function AppContent() {
   const [user, setUser] = useState<User | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
   const [showSplashScreen, setShowSplashScreen] = useState(true);
-  const [facultyView, setFacultyView] = useState<ViewType>('dashboard');
+  const [facultyView, setFacultyView] = useState<FacultyViewType>('dashboard');
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const attendanceData = useAttendanceData(user);
 
   useEffect(() => {
-    // onAuthStateChange is called upon subscription with current session.
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-        if (session?.user) {
-            // User is logged in
-            const { data: profile, error } = await supabase
-                .from('profiles')
-                .select('name, role')
-                .eq('id', session.user.id)
-                .single();
-
-            if (profile) {
-                setUser({
-                    id: session.user.id,
-                    email: session.user.email!,
-                    name: profile.name,
-                    role: profile.role,
-                });
-                setShowSplashScreen(false); // A user is logged in, hide splash
-            } else {
-                console.error('Profile not found for authenticated user:', session.user.id, error);
-                await supabase.auth.signOut();
-                setUser(null);
-            }
-        } else {
-            // User is logged out, or no session
-            setUser(null);
+    const savedSession = localStorage.getItem('userSession');
+    if (savedSession) {
+        try {
+            const savedUser: User = JSON.parse(savedSession);
+            setUser(savedUser);
+            setShowSplashScreen(false); // If logged in, don't show splash screen
+        } catch (error) {
+            console.error("Error parsing user session from localStorage:", error);
+            localStorage.removeItem('userSession');
         }
-        setIsInitializing(false);
-    });
-
-    return () => {
-        subscription.unsubscribe();
-    };
+    }
+    setIsInitializing(false);
   }, []);
 
-  const handleLogin = async (email: string, password: string, role: UserRole): Promise<string | null> => {
-    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-    if (signInError) return signInError.message;
+  const handleLogin = (email: string, password: string, role: UserRole, rememberMe: boolean): string | null => {
+    // Find user by email first
+    const foundUser = MOCK_USERS.find(u => u.email.toLowerCase() === email.toLowerCase());
 
-    if (signInData.user) {
-        const { data: profileData, error: profileError } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', signInData.user.id)
-            .single();
-
-        if (profileError || !profileData) return 'Could not retrieve user profile.';
-        if (profileData.role !== role) {
-            await supabase.auth.signOut(); // Sign out the user
-            return 'Your account role does not match this login portal. Please use the other portal.';
-        }
-        // The onAuthStateChange listener will handle setting the user state.
-        return null;
+    // If no user is found, or password is incorrect, return a generic error
+    if (!foundUser || password !== 'password123') {
+        return 'Invalid email or password.';
     }
-    return 'An unexpected error occurred during login.';
+
+    // If credentials are correct, check if the role matches the portal
+    if (foundUser.role !== role) {
+        return 'Your account role does not match this login portal. Please use the other portal.';
+    }
+
+    // If everything is correct, log the user in
+    setUser(foundUser);
+    if (rememberMe) {
+        localStorage.setItem('userSession', JSON.stringify(foundUser));
+    } else {
+        localStorage.removeItem('userSession');
+    }
+    return null;
   };
 
-  const handleSignUp = async (name: string, email: string, password: string, role: UserRole): Promise<string | null> => {
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    if (error) return error.message;
-
-    if (data.user) {
-        const { error: profileError } = await supabase.from('profiles').insert({
-            id: data.user.id,
-            name,
-            role
-        });
-        if (profileError) {
-            console.error("Error creating profile:", profileError);
-            return `Account created, but profile could not be saved. Please contact support. Error: ${profileError.message}`;
-        }
-        if (role === 'student') {
-            const { error: studentError } = await supabase.from('students').insert({
-                id: data.user.id,
-                name,
-                anonymized_name: anonymizeName(name)
-            });
-            if (studentError) {
-                 console.error("Error creating student record:", studentError);
-                 return `Account created, but student record could not be saved. Please contact support. Error: ${studentError.message}`;
-            }
-        }
-        return null;
-    }
-    return 'An unexpected error occurred during sign up.';
-  };
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
+  const handleLogout = () => {
+    setUser(null);
     setShowSplashScreen(true);
+    localStorage.removeItem('userSession');
     attendanceData.resetData();
     setFacultyView('dashboard');
   };
 
-  const handleForgotPassword = async (email: string): Promise<string | null> => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email);
-    if (error) {
-        if (error.message.includes('not find user')) {
-             return 'If an account existed for this email, a reset link would be sent.';
-        }
-        return error.message;
+  const handleForgotPassword = (email: string): string | null => {
+    const foundUser = MOCK_USERS.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (foundUser) {
+        return `Password reset is not available in this demo. Your password is 'password123'.`;
     }
-    return 'If an account existed for this email, a reset link has been sent.';
+    return 'If an account existed for this email, a reset link would be sent.';
   };
 
   const renderFacultyView = () => {
@@ -183,16 +129,16 @@ function AppContent() {
     }
   };
 
-  if (isInitializing || (user && attendanceData.loading)) {
+  if (isInitializing || attendanceData.loading) {
     return <LoadingScreen />;
   }
 
-  if (!user && showSplashScreen) {
+  if (showSplashScreen) {
     return <SplashScreen onEnter={() => setShowSplashScreen(false)} />;
   }
 
   if (!user) {
-    return <Login onLogin={handleLogin} onSignUp={handleSignUp} onForgotPassword={handleForgotPassword} />;
+    return <Login onLogin={handleLogin} onForgotPassword={handleForgotPassword} />;
   }
   
   if (user.role === 'faculty') {
@@ -225,6 +171,8 @@ function AppContent() {
         onLogout={handleLogout} 
         markAttendance={attendanceData.markAttendance}
         courses={attendanceData.courses}
+        studentJoinsLiveClass={attendanceData.studentJoinsLiveClass}
+        studentLeavesLiveClass={attendanceData.studentLeavesLiveClass}
      />;
   }
 

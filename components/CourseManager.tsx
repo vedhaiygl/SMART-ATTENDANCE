@@ -1,23 +1,24 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
-import type { Course, Student, Session } from '../types';
+import type { Course, Student, Session, LiveClass } from '../types';
 import QRCodeModal from './QRCodeModal';
 import EnrollStudentModal from './EnrollStudentModal';
+import FacultyLiveClassModal from './FacultyLiveClassModal';
 import { ICONS } from '../constants';
 import { QR_CODE_VALIDITY_SECONDS } from '../hooks/useAttendanceData';
 
 interface CourseManagerProps {
     courses: Course[];
     allStudents: Student[];
-    // FIX: Changed return type to a Promise to match the async function from the hook
-    createNewSession: (courseId: string, type: 'Online' | 'Offline', limit: number, livenessCheck: boolean) => Promise<{ sessionId: string; qrCodeValue: string; shortCode?: string }>;
+    createNewSession: (courseId: string, type: 'Online' | 'Offline', limit: number, livenessCheck: boolean) => { sessionId: string; qrCodeValue: string; shortCode?: string };
     toggleAttendance: (studentId: string, sessionId: string, courseId: string) => void;
     regenerateQrCode: (sessionId: string) => void;
     enrollStudent: (courseId: string, studentId: string) => void;
     deleteSession: (courseId: string, sessionId: string) => void;
+    startLiveClass: (courseId: string) => LiveClass;
+    endLiveClass: (courseId: string, liveClassId: string) => void;
 }
 
-const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, createNewSession, toggleAttendance, regenerateQrCode, enrollStudent, deleteSession }) => {
+const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, createNewSession, toggleAttendance, regenerateQrCode, enrollStudent, deleteSession, startLiveClass, endLiveClass }) => {
     const [selectedCourseId, setSelectedCourseId] = useState<string | null>(courses.length > 0 ? courses[0].id : null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
@@ -26,11 +27,26 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
     const [sessionType, setSessionType] = useState<'Online' | 'Offline'>('Offline');
     const [livenessCheckEnabled, setLivenessCheckEnabled] = useState(false);
     const [sessionToDelete, setSessionToDelete] = useState<Session | null>(null);
+    const [activeLiveClass, setActiveLiveClass] = useState<LiveClass | null>(null);
 
     const selectedCourse = useMemo(() => {
         return courses.find(c => c.id === selectedCourseId);
     }, [courses, selectedCourseId]);
     
+    // Refresh activeLiveClass data from the main courses state
+    useEffect(() => {
+        if (activeLiveClass && selectedCourse) {
+            const updatedLiveClass = selectedCourse.liveClasses.find(lc => lc.id === activeLiveClass.id);
+            if (updatedLiveClass) {
+                setActiveLiveClass(updatedLiveClass);
+            } else {
+                // The class might have been removed or ended elsewhere
+                setActiveLiveClass(null);
+            }
+        }
+    }, [courses, selectedCourse, activeLiveClass]);
+
+
     const activeSession = useMemo(() => {
         return selectedCourse?.sessions.find(s => s.id === activeSessionId);
     }, [selectedCourse, activeSessionId]);
@@ -71,18 +87,23 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
     }, [isModalOpen, activeSessionId, regenerateQrCode]);
 
 
-    // FIX: Made function async to handle promise from createNewSession
-    const handleStartSession = async () => {
+    const handleStartSession = () => {
         if (selectedCourseId) {
             if (limit <= 0) {
                 alert('Please enter a valid limit greater than 0.');
                 return;
             }
             const isLivenessActive = sessionType === 'Online' && livenessCheckEnabled;
-            // FIX: Awaited the async function call
-            const { sessionId } = await createNewSession(selectedCourseId, sessionType, limit, isLivenessActive);
+            const { sessionId } = createNewSession(selectedCourseId, sessionType, limit, isLivenessActive);
             setActiveSessionId(sessionId);
             setIsModalOpen(true);
+        }
+    };
+
+    const handleStartLiveClass = () => {
+        if (selectedCourseId) {
+            const newLiveClass = startLiveClass(selectedCourseId);
+            setActiveLiveClass(newLiveClass);
         }
     };
 
@@ -241,6 +262,17 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
                         className="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-500 transition-all active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
                     >
                         Start New Session
+                    </button>
+                    <button
+                        onClick={handleStartLiveClass}
+                        disabled={!selectedCourseId}
+                        className="flex items-center justify-center bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-500 transition-all active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
+                    >
+                        <span className="relative flex h-3 w-3 mr-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+                        </span>
+                        Start Live Class
                     </button>
                 </div>
             </div>
@@ -413,6 +445,14 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
                         </div>
                     </div>
                 </div>
+            )}
+             {activeLiveClass && selectedCourse && (
+                <FacultyLiveClassModal
+                    liveClass={activeLiveClass}
+                    course={selectedCourse}
+                    onClose={() => setActiveLiveClass(null)}
+                    endLiveClass={endLiveClass}
+                />
             )}
         </div>
     );

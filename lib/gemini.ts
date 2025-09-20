@@ -1,6 +1,6 @@
 
 
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI, Type, Chat } from "@google/genai";
 import type { Course, AtRiskStudent } from '../types';
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -250,4 +250,40 @@ export const generateLearningPath = async (courseName: string, studentName: stri
         console.error("Error generating learning path:", error);
         throw new Error("Failed to generate the learning path from the AI. Please try again.");
     }
+};
+
+export const startChatWithStudyBuddy = (courses: Course[], studentName: string): Chat => {
+    if (!process.env.API_KEY) {
+        throw new Error("API key is not configured.");
+    }
+
+    const courseInfo = courses
+        .filter(course => course.students.some(student => student.name === studentName))
+        .map(c => `- ${c.name} (${c.code})`).join('\n');
+
+    const systemInstruction = `
+        You are a friendly and encouraging AI Study Buddy for a university student named ${studentName}.
+        Your goal is to help them with their studies.
+        The student is enrolled in the following courses:
+        ${courseInfo}
+        
+        When answering questions:
+        - Keep your responses concise, helpful, and positive.
+        - If a question is about a specific course, use the course name in your response.
+        - If a question is generic (e.g., "give me a study tip"), provide a general academic tip.
+        - If you don't know the answer, say so politely and suggest where they might find it (like asking their instructor).
+        - Do not answer questions that are unrelated to academics or the student's courses. Gently guide the conversation back to their studies.
+        - Use markdown for formatting, like lists and bolding, to make your answers easy to read.
+    `;
+
+    const model = "gemini-2.5-flash";
+
+    const chat = ai.chats.create({
+        model,
+        config: {
+            systemInstruction,
+        },
+    });
+    
+    return chat;
 };

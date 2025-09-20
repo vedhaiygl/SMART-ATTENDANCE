@@ -1,5 +1,6 @@
 
 
+
 import React from 'react';
 
 export const ICONS = {
@@ -26,4 +27,6 @@ export const ICONS = {
     chevronRight: <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>,
     lightbulb: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 3.5a5.5 5.5 0 00-5.492 5.116 1.5 1.5 0 01-2.992.168A8.5 8.5 0 0118.5 8.65a1.5 1.5 0 01-2.98.236A5.5 5.5 0 0010 3.5zM6 14.5a1.5 1.5 0 00-1.5 1.5v.5a.5.5 0 00.5.5h10a.5.5 0 00.5-.5v-.5a1.5 1.5 0 00-1.5-1.5h-8zM9 13a1 1 0 11-2 0 1 1 0 012 0zm4 0a1 1 0 11-2 0 1 1 0 012 0z" /></svg>,
     cloudUpload: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>,
+    studyBuddy: <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2V7a2 2 0 012-2h1m6 4h.01M13 12h.01M10 12h.01" /></svg>,
+    live: <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.636 5.636a9 9 0 0112.728 0m-9.9 2.828a5 5 0 017.072 0" /></svg>,
 };

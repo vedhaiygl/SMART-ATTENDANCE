@@ -1,10 +1,10 @@
 import React from 'react';
-import type { ViewType, User } from '../types';
+import type { FacultyViewType, User } from '../types';
 import { ICONS } from '../constants';
 import { useTheme } from '../App';
 
 interface HeaderProps {
-  view: ViewType;
+  view: FacultyViewType;
   user: User;
   onLogout: () => void;
   onMenuClick: () => void;
