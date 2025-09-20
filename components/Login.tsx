@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import type { UserRole } from '../types';
 
 interface LoginProps {
     onLogin: (username: string, password: string, role: UserRole, rememberMe: boolean) => string | null;
     onForgotPassword: (email: string) => string | null;
 }
-
 
 const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
     const [mode, setMode] = useState<'select' | 'faculty' | 'student' | 'forgot'>('select');
@@ -19,21 +18,9 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
     const [formErrors, setFormErrors] = useState<{
         username?: string;
         password?: string;
-        captcha?: string;
         general?: string;
         resetEmail?: string;
     }>({});
-    
-    // CAPTCHA state
-    const [captchaNum1, setCaptchaNum1] = useState(0);
-    const [captchaNum2, setCaptchaNum2] = useState(0);
-    const [captchaAnswer, setCaptchaAnswer] = useState('');
-
-    const generateCaptcha = () => {
-        setCaptchaNum1(Math.floor(Math.random() * 10) + 1);
-        setCaptchaNum2(Math.floor(Math.random() * 10) + 1);
-        setCaptchaAnswer('');
-    };
     
     const resetFormState = () => {
         setUsername('');
@@ -41,16 +28,8 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
         setRememberMe(false);
         setFormErrors({});
         setInfoMessage('');
-        setCaptchaAnswer('');
-        generateCaptcha();
     };
-
-    useEffect(() => {
-        if (mode !== 'select') {
-            generateCaptcha();
-        }
-    }, [mode]);
-
+    
     const validateEmail = (email: string): boolean => {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(String(email).toLowerCase());
@@ -78,20 +57,11 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
             hasError = true;
         }
         
-        if (parseInt(captchaAnswer, 10) !== captchaNum1 + captchaNum2) {
-            newErrors.captcha = 'Incorrect CAPTCHA answer. Please try again.';
-            hasError = true;
-        }
-        
         setFormErrors(newErrors);
 
         if (hasError) {
-            if (newErrors.captcha) {
-                generateCaptcha();
-            }
             return;
         }
-
 
         setLoading(true);
 
@@ -105,7 +75,6 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
             const errorMessage = onLogin(username, password, mode, rememberMe);
             if (errorMessage) {
                 setFormErrors({ general: errorMessage });
-                generateCaptcha();
             }
             setLoading(false);
         }, 500);
@@ -123,20 +92,11 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
             hasError = true;
         }
         
-        if (parseInt(captchaAnswer, 10) !== captchaNum1 + captchaNum2) {
-            newErrors.captcha = 'Incorrect CAPTCHA answer. Please try again.';
-            hasError = true;
-        }
-        
         setFormErrors(newErrors);
 
         if (hasError) {
-            if (newErrors.captcha) {
-                generateCaptcha();
-            }
             return;
         }
-
 
         setLoading(true);
 
@@ -148,9 +108,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
                 setInfoMessage(resultMessage);
             }
             setResetEmail('');
-            generateCaptcha();
         }, 500);
-
     };
 
     if (mode === 'select') {
@@ -206,19 +164,6 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
                             {formErrors.resetEmail && <p className="mt-2 text-xs text-red-500">{formErrors.resetEmail}</p>}
                         </div>
                         
-                        <div>
-                            <label htmlFor="captcha-forgot" className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">
-                                Security Check: What is {captchaNum1} + {captchaNum2}?
-                            </label>
-                            <input
-                                id="captcha-forgot" name="captcha-forgot" type="number" required value={captchaAnswer}
-                                onChange={(e) => { setCaptchaAnswer(e.target.value); setFormErrors(prev => ({...prev, captcha: undefined})); }}
-                                className={`w-full px-3 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500`}
-                                placeholder="Your answer"
-                            />
-                            {formErrors.captcha && <p className="mt-2 text-xs text-red-500">{formErrors.captcha}</p>}
-                        </div>
-
                         {formErrors.general && <div className="p-3 bg-red-500/20 text-red-400 dark:text-red-300 rounded-md text-sm font-medium text-center">{formErrors.general}</div>}
                         {infoMessage && <div className="p-3 bg-green-500/20 text-green-700 dark:text-green-300 rounded-md text-sm font-medium text-center">{infoMessage}</div>}
                         
@@ -278,15 +223,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
                             placeholder="••••••••" />
                         {formErrors.password && <p className="mt-2 text-xs text-red-500">{formErrors.password}</p>}
                     </div>
-                     <div>
-                        <label htmlFor="captcha-login" className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Security Check: What is {captchaNum1} + {captchaNum2}?</label>
-                        <input id="captcha-login" name="captcha-login" type="number" required value={captchaAnswer}
-                            onChange={(e) => { setCaptchaAnswer(e.target.value); setFormErrors(prev => ({...prev, captcha: undefined, general: undefined})); }}
-                            className={`w-full px-3 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-${accentColor}-500 focus:border-${accentColor}-500`}
-                            placeholder="Your answer" />
-                         {formErrors.captcha && <p className="mt-2 text-xs text-red-500">{formErrors.captcha}</p>}
-                    </div>
-                    
+
                     <div className="flex items-center justify-between">
                         <div className="flex items-center">
                             <input
@@ -307,7 +244,6 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
                             </button>
                         </div>
                     </div>
-
 
                     {formErrors.general && <div className="p-3 bg-red-500/20 text-red-400 dark:text-red-300 rounded-md text-sm font-medium text-center">{formErrors.general}</div>}
                     {infoMessage && <div className="p-3 bg-sky-500/20 text-sky-700 dark:text-sky-300 rounded-md text-sm font-medium text-center">{infoMessage}</div>}
