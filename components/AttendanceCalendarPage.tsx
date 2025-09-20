@@ -112,7 +112,7 @@ const AttendanceCalendarPage: React.FC<AttendanceCalendarPageProps> = ({ user, c
                                 key={index}
                                 className={`h-28 border border-slate-200 dark:border-slate-700/50 rounded-lg p-2 flex flex-col ${isCurrentMonth ? 'bg-white dark:bg-slate-800' : 'bg-slate-50 dark:bg-slate-800/50'}`}
                             >
-                                <span className={`font-semibold text-sm ${isToday ? 'bg-indigo-600 text-white rounded-full h-6 w-6 flex items-center justify-center' : ''} ${!isCurrentMonth ? 'text-slate-400 dark:text-slate-500' : ''}`}>
+                                <span className={`font-semibold text-sm ${isToday ? 'bg-emerald-600 text-white rounded-full h-6 w-6 flex items-center justify-center' : ''} ${!isCurrentMonth ? 'text-slate-400 dark:text-slate-500' : ''}`}>
                                     {day.getDate()}
                                 </span>
                                 <div className="mt-1 space-y-1 overflow-y-auto text-xs">

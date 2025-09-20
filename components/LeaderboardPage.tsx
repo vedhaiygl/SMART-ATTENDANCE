@@ -73,7 +73,7 @@ const LeaderboardPage: React.FC<LeaderboardPageProps> = ({ user, courses }) => {
                         id="course-select-leaderboard"
                         value={selectedCourseId}
                         onChange={e => setSelectedCourseId(e.target.value)}
-                        className="bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full md:w-auto p-2.5"
+                        className="bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full md:w-auto p-2.5"
                     >
                         {enrolledCourses.map(course => (
                             <option key={course.id} value={course.id}>{course.name}</option>
@@ -83,13 +83,13 @@ const LeaderboardPage: React.FC<LeaderboardPageProps> = ({ user, courses }) => {
                 <div className="flex items-center space-x-2 p-1 bg-slate-100 dark:bg-slate-700 rounded-lg self-start md:self-center">
                     <button
                         onClick={() => setSortBy('streak')}
-                        className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-all active:scale-95 ${sortBy === 'streak' ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}`}
+                        className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-all active:scale-95 ${sortBy === 'streak' ? 'bg-emerald-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}`}
                     >
                         Top Streaks
                     </button>
                     <button
                         onClick={() => setSortBy('attendance')}
-                        className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-all active:scale-95 ${sortBy === 'attendance' ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}`}
+                        className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-all active:scale-95 ${sortBy === 'attendance' ? 'bg-emerald-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}`}
                     >
                         Top Attendance
                     </button>
@@ -112,7 +112,7 @@ const LeaderboardPage: React.FC<LeaderboardPageProps> = ({ user, courses }) => {
                                 {leaderboardData.map((student, index) => (
                                     <tr 
                                         key={student.id} 
-                                        className={`border-b border-slate-200 dark:border-slate-700 animate-slide-in-top ${student.id === user.id ? 'bg-indigo-100 dark:bg-indigo-900/50' : 'hover:bg-slate-50 dark:hover:bg-slate-700/30'}`}
+                                        className={`border-b border-slate-200 dark:border-slate-700 animate-slide-in-top ${student.id === user.id ? 'bg-emerald-100 dark:bg-emerald-900/50' : 'hover:bg-slate-50 dark:hover:bg-slate-700/30'}`}
                                         style={{ animationDelay: `${Math.min(index * 100, 1000)}ms` }}
                                     >
                                         <td className="p-4 font-bold text-lg text-center text-slate-800 dark:text-slate-100">
@@ -120,7 +120,7 @@ const LeaderboardPage: React.FC<LeaderboardPageProps> = ({ user, courses }) => {
                                         </td>
                                         <td className="p-4 font-medium whitespace-nowrap text-slate-900 dark:text-slate-100">
                                             {student.anonymizedName}
-                                            {student.id === user.id && <span className="ml-2 text-xs font-bold text-indigo-600 dark:text-indigo-400">(You)</span>}
+                                            {student.id === user.id && <span className="ml-2 text-xs font-bold text-emerald-600 dark:text-emerald-400">(You)</span>}
                                         </td>
                                         <td className="p-4 font-semibold text-center text-lg text-slate-800 dark:text-slate-100 flex items-center justify-center">
                                             {student.streak}

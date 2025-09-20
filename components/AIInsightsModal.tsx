@@ -58,7 +58,7 @@ const AIInsightsModal: React.FC<AIInsightsModalProps> = ({ onClose, isLoading, e
         if (isLoading) {
             return (
                 <div className="flex flex-col items-center justify-center h-48">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 dark:border-indigo-400"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 dark:border-emerald-400"></div>
                     <p className="text-slate-600 dark:text-slate-300 mt-4">Analyzing data...</p>
                     <p className="text-slate-500 dark:text-slate-400 text-sm">The AI is thinking. This may take a moment.</p>
                 </div>
@@ -105,7 +105,7 @@ const AIInsightsModal: React.FC<AIInsightsModalProps> = ({ onClose, isLoading, e
                     {ICONS.close}
                 </button>
                 <div className="flex items-center mb-4">
-                    <span className="text-indigo-500 dark:text-indigo-400">{ICONS.sparkles}</span>
+                    <span className="text-emerald-500 dark:text-emerald-400">{ICONS.sparkles}</span>
                     <h2 className="text-2xl font-bold text-slate-900 dark:text-white">AI Engagement Insights</h2>
                 </div>
                 <p className="text-slate-500 dark:text-slate-400 mb-6">

@@ -55,7 +55,7 @@ const EnrollStudentModal: React.FC<EnrollStudentModalProps> = ({
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search by Anonymized Name or ID..."
-                    className="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     aria-label="Search for students"
                     autoFocus
                 />
@@ -72,7 +72,7 @@ const EnrollStudentModal: React.FC<EnrollStudentModalProps> = ({
                                 <button
                                     onClick={() => enrollStudent(course.id, student.id)}
                                     disabled={isEnrolled}
-                                    className="bg-indigo-600 text-white font-semibold py-1.5 px-4 rounded-lg text-sm hover:bg-indigo-500 transition-all active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
+                                    className="bg-emerald-600 text-white font-semibold py-1.5 px-4 rounded-lg text-sm hover:bg-emerald-500 transition-all active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
                                 >
                                     {isEnrolled ? 'Enrolled' : 'Enroll'}
                                 </button>

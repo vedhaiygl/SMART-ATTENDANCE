@@ -92,7 +92,7 @@ const QRCodeModal: React.FC<QRCodeModalProps> = ({ onClose, session }) => {
             <div className={`mt-6 ${isFocusMode ? 'w-80' : 'w-full'}`}>
                 <div className="w-full bg-slate-200 dark:bg-slate-600 rounded-full h-2.5">
                     <div
-                        className="bg-indigo-600 h-2.5 rounded-full"
+                        className="bg-emerald-600 h-2.5 rounded-full"
                         style={{
                             width: `${progressPercentage}%`,
                             transition: timeLeft === QR_CODE_VALIDITY_SECONDS ? 'none' : 'width 1s linear',

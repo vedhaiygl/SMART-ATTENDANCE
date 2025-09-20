@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import StudentAttendancePage from './StudentAttendancePage';
 import StudentScanPage from './StudentScanPage';
@@ -155,7 +156,7 @@ const StudentView: React.FC<StudentViewProps> = ({ user, onLogout, markAttendanc
                     <ThemeToggle />
                     <button
                         onClick={onLogout}
-                        className="bg-sky-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-sky-500 transition-all active:scale-95 text-sm"
+                        className="bg-emerald-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-emerald-500 transition-all active:scale-95 text-sm"
                     >
                         Logout
                     </button>
@@ -198,37 +199,37 @@ const StudentView: React.FC<StudentViewProps> = ({ user, onLogout, markAttendanc
                     <div className="flex space-x-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg overflow-x-auto">
                         <button
                             onClick={() => setView('liveClasses')}
-                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'liveClasses' ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'liveClasses' ? 'bg-emerald-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
                         >
                             Live Classes
                         </button>
                         <button
                             onClick={() => setView('attendance')}
-                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'attendance' ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'attendance' ? 'bg-emerald-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
                         >
                             My Attendance
                         </button>
                         <button
                             onClick={() => setView('scan')}
-                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'scan' ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'scan' ? 'bg-emerald-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
                         >
                             Scan Code
                         </button>
                         <button
                             onClick={() => setView('leaderboard')}
-                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'leaderboard' ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'leaderboard' ? 'bg-emerald-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
                         >
                             Leaderboard
                         </button>
                          <button
                             onClick={() => setView('calendar')}
-                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'calendar' ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'calendar' ? 'bg-emerald-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
                         >
                             Calendar
                         </button>
                          <button
                             onClick={() => setView('studyBuddy')}
-                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'studyBuddy' ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'studyBuddy' ? 'bg-emerald-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
                         >
                             Study Buddy
                         </button>

@@ -138,7 +138,7 @@ const LivenessCheckModal: React.FC<LivenessCheckModalProps> = ({ isOpen, onClose
                         <button 
                             onClick={handleCapture} 
                             disabled={!isCameraReady || !!cameraError}
-                            className="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-500 transition-all active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
+                            className="w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-500 transition-all active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
                         >
                             Capture Selfie
                         </button>

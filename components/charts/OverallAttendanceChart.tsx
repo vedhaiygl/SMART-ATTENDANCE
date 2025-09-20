@@ -53,7 +53,7 @@ const OverallAttendanceChart: React.FC<ChartProps> = ({ course }) => {
                         boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
                         backdropFilter: 'blur(4px)',
                     }}
-                    cursor={{ stroke: '#818cf8', strokeWidth: 1, strokeDasharray: '3 3' }}
+                    cursor={{ stroke: '#34d399', strokeWidth: 1, strokeDasharray: '3 3' }}
                 />
                 <Legend wrapperStyle={{fontSize: "14px", color: tickColor}} verticalAlign="top" align="right" />
                 
@@ -72,7 +72,7 @@ const OverallAttendanceChart: React.FC<ChartProps> = ({ course }) => {
                     />
                 )}
                 
-                <Line type="monotone" dataKey="attendance" name="Attendance %" stroke="#4f46e5" strokeWidth={2} activeDot={{ r: 8, stroke: '#4f46e5', strokeWidth: 2 }} dot={{fill: '#4f46e5', r:4, strokeWidth: 0}} />
+                <Line type="monotone" dataKey="attendance" name="Attendance %" stroke="#10b981" strokeWidth={2} activeDot={{ r: 8, stroke: '#10b981', strokeWidth: 2 }} dot={{fill: '#10b981', r:4, strokeWidth: 0}} />
             </LineChart>
         </ResponsiveContainer>
     );

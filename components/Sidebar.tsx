@@ -19,7 +19,7 @@ const NavItem: React.FC<{
     onClick={onClick}
     className={`flex items-center p-3 my-2 rounded-lg cursor-pointer transition-all duration-200 active:scale-[0.98] ${
       isActive
-        ? 'bg-indigo-600 text-white shadow-lg'
+        ? 'bg-emerald-600 text-white shadow-lg'
         : 'text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-800 dark:hover:text-slate-200'
     }`}
   >
@@ -55,7 +55,7 @@ const Sidebar: React.FC<SidebarProps> = ({ view, setView, isOpen, onClose }) => 
                     {ICONS.close}
                 </button>
                 <div className="text-2xl font-bold text-slate-900 dark:text-white mb-10 flex items-center justify-center py-4">
-                    <span className="bg-indigo-600 p-2 rounded-lg mr-2 text-white">
+                    <span className="bg-emerald-600 p-2 rounded-lg mr-2 text-white">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </span>
                     ByteForce

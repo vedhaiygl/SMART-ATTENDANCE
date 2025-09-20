@@ -182,7 +182,7 @@ const StudentScanPage: React.FC<StudentScanPageProps> = ({ user, markAttendance 
                         setScanResult(null);
                         setScannerStatus('idle');
                     }}
-                    className="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-500 transition-all duration-150 transform hover:scale-105 active:scale-95"
+                    className="w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-500 transition-all duration-150 transform hover:scale-105 active:scale-95"
                 >
                     Scan QR Code
                 </button>
@@ -200,10 +200,10 @@ const StudentScanPage: React.FC<StudentScanPageProps> = ({ user, markAttendance 
                             value={manualCode}
                             onChange={(e) => setManualCode(e.target.value)}
                             placeholder="e.g., ABC-123"
-                            className="w-full text-center tracking-widest font-mono text-lg p-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="w-full text-center tracking-widest font-mono text-lg p-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                         />
                     </div>
-                    <button type="submit" className="w-full bg-sky-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-sky-500 transition-all duration-150 transform hover:scale-105 active:scale-95">
+                    <button type="submit" className="w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-500 transition-all duration-150 transform hover:scale-105 active:scale-95">
                         Submit Code
                     </button>
                 </form>

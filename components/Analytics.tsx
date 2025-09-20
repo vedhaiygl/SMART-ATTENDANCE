@@ -106,7 +106,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ courses }) => {
                             setAtRiskStudents(null);
                             setAnalysisError(null);
                         }}
-                        className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full md:w-auto p-2.5"
+                        className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full md:w-auto p-2.5"
                     >
                         {courses.map(course => (
                             <option key={course.id} value={course.id}>{course.name}</option>
@@ -116,7 +116,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ courses }) => {
                 <button
                     onClick={handleGetInsights}
                     disabled={!selectedCourse || isInsightsLoading}
-                    className="flex items-center justify-center bg-indigo-600 text-white font-bold py-2.5 px-5 rounded-lg hover:bg-indigo-500 transition-all active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed mt-4 md:mt-0 md:self-end"
+                    className="flex items-center justify-center bg-emerald-600 text-white font-bold py-2.5 px-5 rounded-lg hover:bg-emerald-500 transition-all active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed mt-4 md:mt-0 md:self-end"
                 >
                     {ICONS.sparkles}
                     <span>AI Insights</span>
@@ -147,7 +147,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ courses }) => {
                         
                         {isAnalyzing ? (
                              <div className="flex flex-col items-center justify-center h-40">
-                                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-500"></div>
+                                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-500"></div>
                                 <p className="text-slate-600 dark:text-slate-300 mt-4">Analyzing patterns...</p>
                             </div>
                         ) : analysisError ? (
@@ -165,7 +165,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ courses }) => {
                                             </div>
                                             <button 
                                                 onClick={() => handleGenerateEmail(student)}
-                                                className="flex items-center justify-center mt-2 sm:mt-0 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 font-bold py-1.5 px-3 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-900 transition-all active:scale-95 text-sm whitespace-nowrap"
+                                                className="flex items-center justify-center mt-2 sm:mt-0 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-300 font-bold py-1.5 px-3 rounded-lg hover:bg-emerald-200 dark:hover:bg-emerald-900 transition-all active:scale-95 text-sm whitespace-nowrap"
                                             >
                                                 <span className="mr-2">{ICONS.mail}</span>
                                                 Generate Outreach Email
@@ -180,7 +180,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ courses }) => {
                             <div className="text-center mt-6">
                                 <button 
                                     onClick={handleAnalyzeAtRisk} 
-                                    className="bg-indigo-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-indigo-500 transition-all active:scale-95"
+                                    className="bg-emerald-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-emerald-500 transition-all active:scale-95"
                                 >
                                     Analyze Student Engagement
                                 </button>

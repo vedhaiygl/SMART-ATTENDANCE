@@ -159,7 +159,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
                 <div className="w-full max-w-sm p-8 space-y-6 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700">
                     <div className="text-center">
                         <div className="text-3xl font-bold text-slate-900 dark:text-white mb-2 flex items-center justify-center">
-                            <span className="bg-indigo-600 text-white p-2 rounded-lg mr-3">
+                            <span className="bg-emerald-600 text-white p-2 rounded-lg mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                             </span>
                             ByteForce
@@ -168,10 +168,10 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
                     </div>
                     
                     <div className="space-y-4">
-                        <button onClick={() => setMode('faculty')} className="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-500 transition-all duration-150 transform hover:scale-105 active:scale-95">
+                        <button onClick={() => setMode('faculty')} className="w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-500 transition-all duration-150 transform hover:scale-105 active:scale-95">
                             Faculty Portal
                         </button>
-                        <button onClick={() => setMode('student')} className="w-full bg-sky-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-sky-500 transition-all duration-150 transform hover:scale-105 active:scale-95">
+                        <button onClick={() => setMode('student')} className="w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-500 transition-all duration-150 transform hover:scale-105 active:scale-95">
                             Student Portal
                         </button>
                     </div>
@@ -200,7 +200,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
                             <input
                                 id="reset-email" name="reset-email" type="email" autoComplete="email" required value={resetEmail}
                                 onChange={(e) => { setResetEmail(e.target.value); setFormErrors(prev => ({...prev, resetEmail: undefined})); }}
-                                className={`w-full px-3 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
+                                className={`w-full px-3 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500`}
                                 placeholder="e.g., name@university.edu"
                             />
                             {formErrors.resetEmail && <p className="mt-2 text-xs text-red-500">{formErrors.resetEmail}</p>}
@@ -213,7 +213,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
                             <input
                                 id="captcha-forgot" name="captcha-forgot" type="number" required value={captchaAnswer}
                                 onChange={(e) => { setCaptchaAnswer(e.target.value); setFormErrors(prev => ({...prev, captcha: undefined})); }}
-                                className={`w-full px-3 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
+                                className={`w-full px-3 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500`}
                                 placeholder="Your answer"
                             />
                             {formErrors.captcha && <p className="mt-2 text-xs text-red-500">{formErrors.captcha}</p>}
@@ -223,7 +223,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
                         {infoMessage && <div className="p-3 bg-green-500/20 text-green-700 dark:text-green-300 rounded-md text-sm font-medium text-center">{infoMessage}</div>}
                         
                         <div>
-                            <button type="submit" disabled={loading || !!infoMessage} className={`w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-500 transition-transform duration-150 transform hover:scale-105 active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed`}>
+                            <button type="submit" disabled={loading || !!infoMessage} className={`w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-500 transition-transform duration-150 transform hover:scale-105 active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed`}>
                                 {loading ? 'Sending...' : 'Send Reset Link'}
                             </button>
                         </div>
@@ -239,14 +239,14 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
     }
 
     const title = mode === 'faculty' ? 'Faculty' : 'Student';
-    const accentColor = mode === 'faculty' ? 'indigo' : 'sky';
+    const accentColor = 'emerald';
     const formTitle = `${title} Sign In`;
     const buttonTitle = 'Login';
     const loadingText = 'Logging in...';
 
     return (
         <div className="flex items-center justify-center h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white">
-            <div className={`w-full max-w-sm p-8 space-y-6 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border-2 transition-colors duration-300 ${mode === 'faculty' ? 'border-indigo-500' : 'border-sky-500'}`}>
+            <div className={`w-full max-w-sm p-8 space-y-6 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border-2 transition-colors duration-300 border-emerald-500`}>
                 <div className="text-center">
                     <div className="text-3xl font-bold text-slate-900 dark:text-white mb-2 flex items-center justify-center">
                         <span className={`bg-${accentColor}-600 text-white p-2 rounded-lg mr-3`}>

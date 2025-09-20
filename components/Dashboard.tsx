@@ -7,7 +7,7 @@ interface DashboardProps {
 }
 
 const StatCard: React.FC<{ title: string; value: string | number; description: string }> = ({ title, value, description }) => (
-    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg hover:shadow-indigo-500/10 dark:hover:shadow-indigo-500/20 hover:border-indigo-500 transition-all duration-300">
+    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg hover:shadow-emerald-500/10 dark:hover:shadow-emerald-500/20 hover:border-emerald-500 transition-all duration-300">
         <h3 className="text-sm font-medium text-slate-500 dark:text-slate-400">{title}</h3>
         <p className="text-3xl font-bold text-slate-900 dark:text-white mt-2">{value}</p>
         <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{description}</p>

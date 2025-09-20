@@ -317,7 +317,7 @@ const StudentAttendancePage: React.FC<StudentAttendancePageProps> = ({ user, cou
                             <div className="mt-4">
                                 <button
                                     onClick={() => handleToggleDetails(course.id)}
-                                    className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors"
+                                    className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 dark:hover:text-emerald-300 transition-colors"
                                 >
                                     {expandedCourseId === course.id ? 'Hide Details' : 'View Details'}
                                 </button>
@@ -342,7 +342,7 @@ const StudentAttendancePage: React.FC<StudentAttendancePageProps> = ({ user, cou
                                                         {status === 'Absent' && (
                                                             <button 
                                                                 onClick={() => handleGetCatchUpPlan(course, session)}
-                                                                className="ml-3 text-indigo-500 dark:text-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300 transition-transform active:scale-90"
+                                                                className="ml-3 text-emerald-500 dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform active:scale-90"
                                                                 aria-label={`Get AI-assisted catch-up plan for session on ${new Date(session.date).toLocaleDateString()}`}
                                                                 title="Get AI Catch-up Plan"
                                                             >
@@ -367,7 +367,7 @@ const StudentAttendancePage: React.FC<StudentAttendancePageProps> = ({ user, cou
                                         <button 
                                             onClick={() => handleGenerateLearningPath(course.id, course.name, user.name, course.attendancePercentage)} 
                                             disabled={learningPathState.isLoading}
-                                            className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline disabled:opacity-50"
+                                            className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline disabled:opacity-50"
                                         >
                                             Regenerate
                                         </button>
@@ -377,7 +377,7 @@ const StudentAttendancePage: React.FC<StudentAttendancePageProps> = ({ user, cou
                                 <div className="mt-3">
                                     {learningPathState?.isLoading ? (
                                         <div className="flex items-center justify-center p-4">
-                                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
+                                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
                                             <p className="ml-3 text-slate-500 dark:text-slate-400">Crafting your suggestions...</p>
                                         </div>
                                     ) : learningPathState?.error ? (
@@ -393,7 +393,7 @@ const StudentAttendancePage: React.FC<StudentAttendancePageProps> = ({ user, cou
                                             <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">Get AI-powered suggestions to improve your learning.</p>
                                             <button 
                                                 onClick={() => handleGenerateLearningPath(course.id, course.name, user.name, course.attendancePercentage)}
-                                                className="flex items-center justify-center mx-auto bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 font-bold py-2 px-4 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-900 transition-all active:scale-95 text-sm"
+                                                className="flex items-center justify-center mx-auto bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-300 font-bold py-2 px-4 rounded-lg hover:bg-emerald-200 dark:hover:bg-emerald-900 transition-all active:scale-95 text-sm"
                                             >
                                                 <span className="mr-2">{ICONS.lightbulb}</span>
                                                 Generate My Path

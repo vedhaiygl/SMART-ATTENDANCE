@@ -188,7 +188,7 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
             <td className="p-3 text-center">
                 <button
                     onClick={handleToggle}
-                    className="group w-5 h-5 rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-800 focus:ring-indigo-500"
+                    className="group w-5 h-5 rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-800 focus:ring-emerald-500"
                     aria-label={`Change attendance for ${formattedDate}. Current status: ${currentStatus}. Click to mark as ${nextStatus}.`}
                     title={`Click to mark as ${nextStatus}`}
                 >
@@ -213,7 +213,7 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
                             type="number"
                             value={limit}
                             onChange={e => setLimit(parseInt(e.target.value, 10) || 0)}
-                            className="bg-slate-100 dark:bg-slate-700 w-full sm:w-24 text-slate-900 dark:text-white rounded-md py-2 px-3 border border-slate-300 dark:border-slate-600 focus:ring-indigo-500 focus:border-indigo-500"
+                            className="bg-slate-100 dark:bg-slate-700 w-full sm:w-24 text-slate-900 dark:text-white rounded-md py-2 px-3 border border-slate-300 dark:border-slate-600 focus:ring-emerald-500 focus:border-emerald-500"
                             min="1"
                         />
                     </div>
@@ -223,7 +223,7 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
                             id="session-type-select"
                             value={sessionType}
                             onChange={e => setSessionType(e.target.value as 'Online' | 'Offline')}
-                            className="bg-slate-100 dark:bg-slate-700 w-full sm:w-28 text-slate-900 dark:text-white rounded-md py-2 px-3 border border-slate-300 dark:border-slate-600 focus:ring-indigo-500 focus:border-indigo-500"
+                            className="bg-slate-100 dark:bg-slate-700 w-full sm:w-28 text-slate-900 dark:text-white rounded-md py-2 px-3 border border-slate-300 dark:border-slate-600 focus:ring-emerald-500 focus:border-emerald-500"
                         >
                             <option value="Offline">Offline</option>
                             <option value="Online">Online</option>
@@ -236,7 +236,7 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
                             checked={livenessCheckEnabled}
                             onChange={e => setLivenessCheckEnabled(e.target.checked)}
                             disabled={sessionType !== 'Online'}
-                            className="h-4 w-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-700 disabled:cursor-not-allowed"
+                            className="h-4 w-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-700 disabled:cursor-not-allowed"
                         />
                         <label htmlFor="liveness-check" className={`text-slate-600 dark:text-slate-300 font-medium text-sm whitespace-nowrap ${sessionType !== 'Online' ? 'cursor-not-allowed' : ''}`}>Enable Liveness Check</label>
                     </div>
@@ -259,7 +259,7 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
                     <button
                         onClick={handleStartSession}
                         disabled={!selectedCourseId}
-                        className="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-500 transition-all active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
+                        className="bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-emerald-500 transition-all active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
                     >
                         Start New Session
                     </button>
@@ -282,7 +282,7 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
                     <button
                         key={course.id}
                         onClick={() => setSelectedCourseId(course.id)}
-                        className={`flex-shrink-0 text-center font-medium p-2 rounded-md transition-all active:scale-95 whitespace-nowrap px-4 ${selectedCourseId === course.id ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+                        className={`flex-shrink-0 text-center font-medium p-2 rounded-md transition-all active:scale-95 whitespace-nowrap px-4 ${selectedCourseId === course.id ? 'bg-emerald-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
                     >
                         {course.name}
                     </button>
@@ -342,7 +342,7 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
                             </div>
                             <button
                                 onClick={() => setIsEnrollModalOpen(true)}
-                                className="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 font-bold py-2 px-4 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-900 transition-all active:scale-95 text-sm whitespace-nowrap"
+                                className="bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-300 font-bold py-2 px-4 rounded-lg hover:bg-emerald-200 dark:hover:bg-emerald-900 transition-all active:scale-95 text-sm whitespace-nowrap"
                             >
                                 Enroll Student
                             </button>

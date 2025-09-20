@@ -48,7 +48,7 @@ const Header: React.FC<HeaderProps> = ({ view, user, onLogout, onMenuClick }) =>
           <ThemeToggle />
           <button
             onClick={onLogout}
-            className="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-500 transition-all active:scale-95 text-sm"
+            className="bg-emerald-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-emerald-500 transition-all active:scale-95 text-sm"
           >
               Logout
           </button>

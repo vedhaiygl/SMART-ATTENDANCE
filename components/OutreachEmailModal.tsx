@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { ICONS } from '../constants';
 
@@ -34,7 +35,7 @@ const OutreachEmailModal: React.FC<OutreachEmailModalProps> = ({ onClose, isLoad
         if (isLoading) {
             return (
                 <div className="flex flex-col items-center justify-center h-48">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
                     <p className="text-slate-600 dark:text-slate-300 mt-4">Generating email...</p>
                 </div>
             );
@@ -75,7 +76,7 @@ const OutreachEmailModal: React.FC<OutreachEmailModalProps> = ({ onClose, isLoad
                     {ICONS.close}
                 </button>
                 <div className="flex items-center mb-4">
-                    <span className="text-indigo-500 dark:text-indigo-400 mr-2">{ICONS.mail}</span>
+                    <span className="text-emerald-500 dark:text-emerald-400 mr-2">{ICONS.mail}</span>
                     <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Generated Outreach Email</h2>
                 </div>
                 <p className="text-slate-500 dark:text-slate-400 mb-6">
@@ -88,7 +89,7 @@ const OutreachEmailModal: React.FC<OutreachEmailModalProps> = ({ onClose, isLoad
                     <button
                         onClick={handleCopy}
                         disabled={!emailContent || copyStatus === 'copied'}
-                        className="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-500 transition-all active:scale-95 disabled:bg-slate-400"
+                        className="bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-emerald-500 transition-all active:scale-95 disabled:bg-slate-400"
                     >
                         {copyStatus === 'copied' ? 'Copied!' : 'Copy to Clipboard'}
                     </button>
