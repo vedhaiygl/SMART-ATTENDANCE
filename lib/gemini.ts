@@ -287,3 +287,26 @@ export const startChatWithStudyBuddy = (courses: Course[], studentName: string):
     
     return chat;
 };
+
+export const generateCourseBanner = async (prompt: string): Promise<string> => {
+    if (!process.env.API_KEY) {
+        throw new Error("API key is not configured.");
+    }
+    const model = 'imagen-4.0-generate-001';
+    try {
+        const response = await ai.models.generateImages({
+            model,
+            prompt: `A vibrant, professional course banner for a university course. Style: digital art, clean, modern, abstract. Content: ${prompt}`,
+            config: {
+                numberOfImages: 1,
+                outputMimeType: 'image/png',
+                aspectRatio: '16:9',
+            },
+        });
+        const base64ImageBytes: string = response.generatedImages[0].image.imageBytes;
+        return `data:image/png;base64,${base64ImageBytes}`;
+    } catch (error) {
+        console.error("Error generating image:", error);
+        throw new Error("Failed to generate the course banner. The model may have refused the prompt, please try a different one.");
+    }
+};

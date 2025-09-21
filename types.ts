@@ -1,9 +1,18 @@
 
 
+export interface FeeItem {
+  id: string;
+  description: string;
+  amount: number;
+  dueDate: string; // ISO string
+  status: 'Paid' | 'Unpaid';
+}
+
 export interface Student {
   id: string;
   name: string;
   anonymizedName: string;
+  fees?: FeeItem[];
 }
 
 export interface Session {
@@ -48,10 +57,11 @@ export interface Course {
   sessions: Session[];
   attendance: AttendanceRecord[];
   liveClasses: LiveClass[];
+  bannerUrl?: string;
 }
 
 export type FacultyViewType = 'dashboard' | 'courses' | 'analytics';
-export type StudentViewType = 'liveClasses' | 'attendance' | 'scan' | 'leaderboard' | 'calendar' | 'studyBuddy';
+export type StudentViewType = 'liveClasses' | 'attendance' | 'scan' | 'leaderboard' | 'calendar' | 'studyBuddy' | 'fees';
 
 export type UserRole = 'faculty' | 'student';
 

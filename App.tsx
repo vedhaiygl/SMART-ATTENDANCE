@@ -7,7 +7,7 @@ import Analytics from './components/Analytics';
 import Login from './components/Login';
 import StudentView from './components/StudentView';
 import { useAttendanceData } from './hooks/useAttendanceData';
-import type { FacultyViewType, User, UserRole } from './types';
+import type { FacultyViewType, User, UserRole, Student } from './types';
 import LoadingScreen from './components/LoadingScreen';
 import SplashScreen from './components/SplashScreen';
 
@@ -31,7 +31,7 @@ const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     const [theme, setTheme] = useState<Theme>(() => {
         const savedTheme = localStorage.getItem('theme') as Theme;
         if (savedTheme) return savedTheme;
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        return 'light'; // Default to light mode
     });
 
     useEffect(() => {
@@ -171,6 +171,7 @@ function AppContent() {
         onLogout={handleLogout} 
         markAttendance={attendanceData.markAttendance}
         courses={attendanceData.courses}
+        allStudents={attendanceData.allStudents}
         studentJoinsLiveClass={attendanceData.studentJoinsLiveClass}
         studentLeavesLiveClass={attendanceData.studentLeavesLiveClass}
      />;

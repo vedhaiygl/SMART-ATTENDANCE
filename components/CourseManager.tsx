@@ -3,6 +3,7 @@ import type { Course, Student, Session, LiveClass } from '../types';
 import QRCodeModal from './QRCodeModal';
 import EnrollStudentModal from './EnrollStudentModal';
 import FacultyLiveClassModal from './FacultyLiveClassModal';
+import GenerateBannerModal from './GenerateBannerModal';
 import { ICONS } from '../constants';
 import { QR_CODE_VALIDITY_SECONDS } from '../hooks/useAttendanceData';
 
@@ -16,12 +17,15 @@ interface CourseManagerProps {
     deleteSession: (courseId: string, sessionId: string) => void;
     startLiveClass: (courseId: string) => LiveClass;
     endLiveClass: (courseId: string, liveClassId: string) => void;
+    updateCourseBanner: (courseId: string, bannerUrl: string) => void;
 }
 
-const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, createNewSession, toggleAttendance, regenerateQrCode, enrollStudent, deleteSession, startLiveClass, endLiveClass }) => {
+const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, createNewSession, toggleAttendance, regenerateQrCode, enrollStudent, deleteSession, startLiveClass, endLiveClass, updateCourseBanner }) => {
     const [selectedCourseId, setSelectedCourseId] = useState<string | null>(courses.length > 0 ? courses[0].id : null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
+    const [isBannerModalOpen, setIsBannerModalOpen] = useState(false);
+    const [courseForBanner, setCourseForBanner] = useState<Course | null>(null);
     const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
     const [limit, setLimit] = useState(50);
     const [sessionType, setSessionType] = useState<'Online' | 'Offline'>('Offline');
@@ -105,6 +109,11 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
             const newLiveClass = startLiveClass(selectedCourseId);
             setActiveLiveClass(newLiveClass);
         }
+    };
+
+    const handleOpenBannerModal = (course: Course) => {
+        setCourseForBanner(course);
+        setIsBannerModalOpen(true);
     };
 
     const handleExportCSV = () => {
@@ -277,15 +286,26 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
                 </div>
             </div>
             
-            <div className="flex space-x-2 p-1 bg-zinc-100 dark:bg-zinc-700 rounded-lg overflow-x-auto">
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {courses.map(course => (
-                    <button
+                    <div
                         key={course.id}
                         onClick={() => setSelectedCourseId(course.id)}
-                        className={`flex-shrink-0 text-center font-medium p-2 rounded-md transition-all active:scale-95 whitespace-nowrap px-4 ${selectedCourseId === course.id ? 'bg-amber-500 text-white' : 'text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-600'}`}
+                        className={`relative group bg-white dark:bg-zinc-800 rounded-xl border-2 transition-all duration-300 cursor-pointer overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-1 ${selectedCourseId === course.id ? 'border-amber-500' : 'border-zinc-200 dark:border-zinc-700 hover:border-amber-400'}`}
                     >
-                        {course.name}
-                    </button>
+                        <img src={course.bannerUrl} alt={`${course.name} banner`} className="h-40 w-full object-cover" />
+                        <div className="p-4">
+                            <h3 className="font-bold text-lg text-zinc-900 dark:text-white truncate">{course.name}</h3>
+                            <p className="text-sm text-zinc-500 dark:text-zinc-400">{course.code}</p>
+                        </div>
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); handleOpenBannerModal(course); }}
+                            className="absolute top-2 right-2 bg-black/50 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-amber-500 active:scale-90"
+                            title="Generate AI Banner"
+                        >
+                            {ICONS.magicWand}
+                        </button>
+                    </div>
                 ))}
             </div>
 
@@ -452,6 +472,13 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
                     course={selectedCourse}
                     onClose={() => setActiveLiveClass(null)}
                     endLiveClass={endLiveClass}
+                />
+            )}
+            {isBannerModalOpen && courseForBanner && (
+                <GenerateBannerModal
+                    course={courseForBanner}
+                    onClose={() => setIsBannerModalOpen(false)}
+                    onUpdateBanner={updateCourseBanner}
                 />
             )}
         </div>

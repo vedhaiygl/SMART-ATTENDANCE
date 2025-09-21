@@ -318,5 +318,11 @@ export const useAttendanceData = (user: User | null) => {
         });
     }, []);
 
-    return { courses, allStudents, loading, createNewSession, regenerateQrCode, markAttendance, toggleAttendance, deleteSession, resetData, enrollStudent, startLiveClass, endLiveClass, studentJoinsLiveClass, studentLeavesLiveClass };
+    const updateCourseBanner = useCallback((courseId: string, bannerUrl: string) => {
+        setCourses(prevCourses =>
+            prevCourses.map(c => (c.id === courseId ? { ...c, bannerUrl } : c))
+        );
+    }, []);
+
+    return { courses, allStudents, loading, createNewSession, regenerateQrCode, markAttendance, toggleAttendance, deleteSession, resetData, enrollStudent, startLiveClass, endLiveClass, studentJoinsLiveClass, studentLeavesLiveClass, updateCourseBanner };
 };

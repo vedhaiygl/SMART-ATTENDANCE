@@ -1,27 +1,56 @@
-import type { Course, Student, Session, AttendanceRecord } from '../types';
+import type { Course, Student, Session, AttendanceRecord, FeeItem } from '../types';
+
+// Helper for dates
+const getDate = (daysOffset: number) => {
+    const date = new Date();
+    date.setDate(date.getDate() + daysOffset);
+    return date.toISOString();
+};
 
 // Expanded list of mock students
 export const MOCK_STUDENTS: Student[] = [
-    { id: 'student-1', name: 'Vedhan', anonymizedName: 'Alpha Lion' },
-    { id: 'student-2', name: 'Mithun', anonymizedName: 'Beta Eagle' },
-    { id: 'student-3', name: 'Sanjeevi', anonymizedName: 'Gamma Shark' },
-    { id: 'student-4', name: 'David Lee', anonymizedName: 'Delta Fox' },
-    { id: 'student-5', name: 'Sophia Chen', anonymizedName: 'Epsilon Owl' },
-    { id: 'student-6', name: 'Michael Brown', anonymizedName: 'Zeta Tiger' },
-    { id: 'student-7', name: 'Olivia Garcia', anonymizedName: 'Eta Bear' },
-    { id: 'student-8', name: 'James Wilson', anonymizedName: 'Theta Wolf' },
-    { id: 'student-9', name: 'Isabella Martinez', anonymizedName: 'Iota Panther' },
-    { id: 'student-10', name: 'William Anderson', anonymizedName: 'Kappa Jaguar' },
-    { id: 'student-11', name: 'Emily Taylor', anonymizedName: 'Lambda Leopard' },
-    { id: 'student-12', name: 'Daniel Thomas', anonymizedName: 'Mu Cobra' },
-    { id: 'student-13', name: 'Mia Hernandez', anonymizedName: 'Nu Viper' },
-    { id: 'student-14', name: 'Alexander Moore', anonymizedName: 'Xi Python' },
-    { id: 'student-15', name: 'Charlotte Jackson', anonymizedName: 'Omicron Hawk' },
-    { id: 'student-16', name: 'Benjamin White', anonymizedName: 'Pi Falcon' },
-    { id: 'student-17', name: 'Amelia Harris', anonymizedName: 'Rho Condor' },
-    { id: 'student-18', name: 'Lucas Martin', anonymizedName: 'Sigma Raven' },
-    { id: 'student-19', name: 'Harper Thompson', anonymizedName: 'Tau Crow' },
-    { id: 'student-20', name: 'Henry Robinson', anonymizedName: 'Upsilon Dove' },
+    { id: 'student-1', name: 'Vedhan', anonymizedName: 'Alpha Lion', fees: [
+        { id: 'fee-1-1', description: 'Tuition Fee - Fall Semester', amount: 5500, dueDate: getDate(30), status: 'Unpaid' },
+        { id: 'fee-1-2', description: 'Library Fee', amount: 50, dueDate: getDate(-10), status: 'Paid' },
+        { id: 'fee-1-3', description: 'Lab Fee - CS101', amount: 150, dueDate: getDate(30), status: 'Unpaid' },
+    ]},
+    { id: 'student-2', name: 'Mithun', anonymizedName: 'Beta Eagle', fees: [
+        { id: 'fee-2-1', description: 'Tuition Fee - Fall Semester', amount: 5500, dueDate: getDate(-5), status: 'Paid' },
+        { id: 'fee-2-2', description: 'Library Fee', amount: 50, dueDate: getDate(-5), status: 'Paid' },
+        { id: 'fee-2-3', description: 'Sports Facility Fee', amount: 100, dueDate: getDate(-5), status: 'Paid' },
+    ]},
+    { id: 'student-3', name: 'Sanjeevi', anonymizedName: 'Gamma Shark', fees: [
+        { id: 'fee-3-1', description: 'Tuition Fee - Fall Semester', amount: 5500, dueDate: getDate(-5), status: 'Unpaid' }, // Overdue
+        { id: 'fee-3-2', description: 'Library Fee', amount: 50, dueDate: getDate(15), status: 'Unpaid' },
+        { id: 'fee-3-3', description: 'Late Registration Fee', amount: 200, dueDate: getDate(-5), status: 'Unpaid' }, // Overdue
+    ]},
+    { id: 'student-4', name: 'David Lee', anonymizedName: 'Delta Fox', fees: [
+        { id: 'fee-4-1', description: 'Tuition Fee - Fall Semester', amount: 5500, dueDate: getDate(20), status: 'Unpaid' },
+    ]},
+    { id: 'student-5', name: 'Sophia Chen', anonymizedName: 'Epsilon Owl', fees: [
+        { id: 'fee-5-1', description: 'Tuition Fee - Fall Semester', amount: 5500, dueDate: getDate(-15), status: 'Paid' },
+        { id: 'fee-5-2', description: 'Lab Fee - DS301', amount: 120, dueDate: getDate(10), status: 'Unpaid' },
+    ]},
+    { id: 'student-6', name: 'Michael Brown', anonymizedName: 'Zeta Tiger', fees: [] },
+    { id: 'student-7', name: 'Olivia Garcia', anonymizedName: 'Eta Bear', fees: [
+         { id: 'fee-7-1', description: 'Tuition Fee - Fall Semester', amount: 5500, dueDate: getDate(-20), status: 'Paid' },
+    ]},
+    { id: 'student-8', name: 'James Wilson', anonymizedName: 'Theta Wolf', fees: [
+        { id: 'fee-8-1', description: 'Tuition Fee - Fall Semester', amount: 5500, dueDate: getDate(25), status: 'Unpaid' },
+        { id: 'fee-8-2', description: 'Technology Fee', amount: 250, dueDate: getDate(25), status: 'Unpaid' },
+    ]},
+    { id: 'student-9', name: 'Isabella Martinez', anonymizedName: 'Iota Panther', fees: [] },
+    { id: 'student-10', name: 'William Anderson', anonymizedName: 'Kappa Jaguar', fees: [] },
+    { id: 'student-11', name: 'Emily Taylor', anonymizedName: 'Lambda Leopard', fees: [] },
+    { id: 'student-12', name: 'Daniel Thomas', anonymizedName: 'Mu Cobra', fees: [] },
+    { id: 'student-13', name: 'Mia Hernandez', anonymizedName: 'Nu Viper', fees: [] },
+    { id: 'student-14', name: 'Alexander Moore', anonymizedName: 'Xi Python', fees: [] },
+    { id: 'student-15', name: 'Charlotte Jackson', anonymizedName: 'Omicron Hawk', fees: [] },
+    { id: 'student-16', name: 'Benjamin White', anonymizedName: 'Pi Falcon', fees: [] },
+    { id: 'student-17', name: 'Amelia Harris', anonymizedName: 'Rho Condor', fees: [] },
+    { id: 'student-18', name: 'Lucas Martin', anonymizedName: 'Sigma Raven', fees: [] },
+    { id: 'student-19', name: 'Harper Thompson', anonymizedName: 'Tau Crow', fees: [] },
+    { id: 'student-20', name: 'Henry Robinson', anonymizedName: 'Upsilon Dove', fees: [] },
 ];
 
 // Helper to generate mock sessions and attendance data
@@ -87,6 +116,7 @@ export const MOCK_COURSES: Course[] = [
     sessions: cs101Data.sessions,
     attendance: cs101Data.attendance,
     liveClasses: [],
+    bannerUrl: `data:image/svg+xml,%3Csvg width='320' height='180' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='p1' width='20' height='20' patternUnits='userSpaceOnUse'%3E%3Ccircle cx='10' cy='10' r='1.5' fill='%23a78bfa'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='%231e1b4b'/%3E%3Crect width='100%25' height='100%25' fill='url(%23p1)'/%3E%3C/svg%3E`,
   },
   {
     id: 'course-2',
@@ -96,6 +126,7 @@ export const MOCK_COURSES: Course[] = [
     sessions: wd201Data.sessions,
     attendance: wd201Data.attendance,
     liveClasses: [],
+    bannerUrl: `data:image/svg+xml,%3Csvg width='320' height='180' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='p2' width='30' height='30' patternUnits='userSpaceOnUse'%3E%3Cpath d='M15 0 L30 15 L15 30 L0 15 Z' fill='%23f59e0b' fill-opacity='0.8'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='%2318181b'/%3E%3Crect width='100%25' height='100%25' fill='url(%23p2)'/%3E%3C/svg%3E`,
   },
   {
     id: 'course-3',
@@ -105,5 +136,6 @@ export const MOCK_COURSES: Course[] = [
     sessions: ds301Data.sessions,
     attendance: ds301Data.attendance,
     liveClasses: [],
+    bannerUrl: `data:image/svg+xml,%3Csvg width='320' height='180' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='p3' width='40' height='40' patternUnits='userSpaceOnUse'%3E%3Cpath d='M0 0 H20 V20 H0 Z' fill='%2322c55e' stroke='%23166534'/%3E%3Cpath d='M20 20 H40 V40 H20 Z' fill='%2322c55e' stroke='%23166534'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='%23052e16'/%3E%3Crect width='100%25' height='100%25' fill='url(%23p3)'/%3E%3C/svg%3E`,
   },
 ];
