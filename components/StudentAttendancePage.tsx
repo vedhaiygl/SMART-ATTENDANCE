@@ -25,7 +25,7 @@ const CircularProgress: React.FC<{ percentage: number }> = ({ percentage }) => {
         <div className="relative w-28 h-28 flex-shrink-0">
             <svg width={sqSize} height={sqSize} viewBox={viewBox}>
                 <circle
-                    className="stroke-slate-200 dark:stroke-slate-700"
+                    className="stroke-sky-100 dark:stroke-blue-800"
                     cx={sqSize / 2}
                     cy={sqSize / 2}
                     r={radius}
@@ -61,15 +61,15 @@ const CircularProgress: React.FC<{ percentage: number }> = ({ percentage }) => {
 
 const PlanRenderer: React.FC<{ text: string }> = ({ text }) => {
     return (
-        <div className="space-y-3 text-slate-600 dark:text-slate-300">
+        <div className="space-y-3 text-gray-600 dark:text-gray-300">
             {/* FIX: Refactored to first trim each line, then filter out empty lines. This is more robust and may fix a subtle runtime issue. */}
             {text.split('\n').map(line => line.trim()).filter(Boolean).map((line, index) => {
                 if (line.startsWith('**') && line.includes('**')) {
                     const parts = line.split('**');
                     return (
-                        <h4 key={index} className="text-md font-bold text-slate-800 dark:text-slate-200 mt-2">
+                        <h4 key={index} className="text-md font-bold text-gray-800 dark:text-gray-200 mt-2">
                             {parts[1]}
-                            <span className="font-normal text-slate-600 dark:text-slate-300">{parts[2]}</span>
+                            <span className="font-normal text-gray-600 dark:text-gray-300">{parts[2]}</span>
                         </h4>
                     );
                 }
@@ -229,20 +229,20 @@ const StudentAttendancePage: React.FC<StudentAttendancePageProps> = ({ user, cou
 
     return (
         <div className="mt-6">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-1">Your Attendance Summary</h2>
-            <p className="text-slate-500 dark:text-slate-400 mb-6">An overview of your attendance and achievements.</p>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-1">Your Attendance Summary</h2>
+            <p className="text-gray-500 dark:text-sky-200 mb-6">An overview of your attendance and achievements.</p>
             
-            <div className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 mb-6">
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Overall Performance</h3>
+            <div className="bg-white dark:bg-blue-900 p-6 rounded-xl border border-sky-100 dark:border-blue-800 mb-6">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Overall Performance</h3>
                 <div className="flex flex-col sm:flex-row items-center gap-6">
                     <div className="flex-shrink-0">
                         <CircularProgress percentage={overallStats.overallAttendance} />
-                        <p className="text-center text-sm text-slate-500 dark:text-slate-400 mt-2">
+                        <p className="text-center text-sm text-gray-500 dark:text-sky-200 mt-2">
                             {overallStats.totalPresent} / {overallStats.totalSessions} Sessions
                         </p>
                     </div>
                     <div className="flex-grow w-full">
-                        <h4 className="text-md font-semibold text-slate-600 dark:text-slate-300 mb-3">Recent Achievements</h4>
+                        <h4 className="text-md font-semibold text-gray-600 dark:text-gray-300 mb-3">Recent Achievements</h4>
                         <div className="space-y-3">
                             {overallStats.highestStreak > 2 && (
                                 <div className="flex items-center text-sm font-semibold bg-orange-500/20 text-orange-600 dark:text-orange-300 px-3 py-2 rounded-lg">
@@ -259,7 +259,7 @@ const StudentAttendancePage: React.FC<StudentAttendancePageProps> = ({ user, cou
                                     </div>
                                 ))
                             ) : overallStats.highestStreak <= 2 ? (
-                                <p className="text-sm text-slate-500 dark:text-slate-400 italic">Keep up the great work to earn new achievements!</p>
+                                <p className="text-sm text-gray-500 dark:text-sky-200 italic">Keep up the great work to earn new achievements!</p>
                             ) : null }
                         </div>
                     </div>
@@ -271,7 +271,7 @@ const StudentAttendancePage: React.FC<StudentAttendancePageProps> = ({ user, cou
                     {enrolledCourses.map(course => {
                         const learningPathState = learningPaths[course.id];
                         return (
-                        <div key={course.id} className={`relative bg-white dark:bg-slate-800 p-6 rounded-xl border-2 transition-all duration-300 hover:bg-slate-50 dark:hover:bg-slate-700/50 hover:-translate-y-1 ${course.attendancePercentage < 75 ? 'border-red-500/50 bg-red-50 dark:bg-red-900/20 shadow-lg shadow-red-900/30' : 'border-slate-200 dark:border-slate-700'}`}>
+                        <div key={course.id} className={`relative bg-white dark:bg-blue-900 p-6 rounded-xl border-2 transition-all duration-300 hover:bg-sky-50 dark:hover:bg-blue-800/50 hover:-translate-y-1 ${course.attendancePercentage < 75 ? 'border-red-500/50 bg-red-50 dark:bg-red-900/20 shadow-lg shadow-red-900/30' : 'border-sky-100 dark:border-blue-800'}`}>
                             {newlyAwardedBadgeCourseId === course.id && <Confetti />}
                             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
                                 <div className="flex-grow">
@@ -283,10 +283,10 @@ const StudentAttendancePage: React.FC<StudentAttendancePageProps> = ({ user, cou
                                                 </svg>
                                             </div>
                                         )}
-                                        <h3 className={`text-xl font-bold ${course.attendancePercentage < 75 ? 'text-red-500 dark:text-red-400' : 'text-slate-900 dark:text-white'}`}>
+                                        <h3 className={`text-xl font-bold ${course.attendancePercentage < 75 ? 'text-red-500 dark:text-red-400' : 'text-gray-900 dark:text-white'}`}>
                                             {course.name}
                                         </h3>
-                                        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded-md whitespace-nowrap">{course.code}</span>
+                                        <span className="text-xs font-semibold text-gray-500 dark:text-sky-200 bg-sky-100 dark:bg-blue-800 px-2 py-1 rounded-md whitespace-nowrap">{course.code}</span>
                                     </div>
                                     
                                     <div className="flex items-center flex-wrap gap-2 mt-4">
@@ -308,7 +308,7 @@ const StudentAttendancePage: React.FC<StudentAttendancePageProps> = ({ user, cou
                                
                                 <div className="flex flex-col items-center flex-shrink-0">
                                    <CircularProgress percentage={course.attendancePercentage} />
-                                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+                                    <p className="text-sm text-gray-500 dark:text-sky-200 mt-2">
                                         Attended: {course.presentCount} / {course.totalSessions}
                                     </p>
                                 </div>
@@ -317,32 +317,32 @@ const StudentAttendancePage: React.FC<StudentAttendancePageProps> = ({ user, cou
                             <div className="mt-4">
                                 <button
                                     onClick={() => handleToggleDetails(course.id)}
-                                    className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 dark:hover:text-emerald-300 transition-colors"
+                                    className="text-sm font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 transition-colors"
                                 >
                                     {expandedCourseId === course.id ? 'Hide Details' : 'View Details'}
                                 </button>
                             </div>
 
                             {expandedCourseId === course.id && (
-                                <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700/50">
-                                    <h4 className="text-md font-semibold text-slate-600 dark:text-slate-300 mb-3">Session History</h4>
+                                <div className="mt-4 pt-4 border-t border-sky-100 dark:border-blue-800/50">
+                                    <h4 className="text-md font-semibold text-gray-600 dark:text-gray-300 mb-3">Session History</h4>
                                     <ul className="space-y-2 max-h-48 overflow-y-auto pr-2">
                                         {course.sessions.map((session, index) => {
                                             const record = course.attendance.find(a => a.sessionId === session.id && a.studentId === user.id);
                                             const status = record?.status || 'Absent';
                                             return (
-                                                <li key={session.id} className="flex justify-between items-center text-sm p-2 bg-slate-100 dark:bg-slate-700/50 rounded-md">
+                                                <li key={session.id} className="flex justify-between items-center text-sm p-2 bg-sky-100 dark:bg-blue-800/50 rounded-md">
                                                     <div className="flex items-center">
                                                         <span
                                                             style={{ animationDelay: `${index * 50}ms` }}
                                                             className={`w-2.5 h-2.5 rounded-full mr-3 flex-shrink-0 animate-pulse-in ${status === 'Present' ? 'bg-green-500' : 'bg-red-500'}`}
                                                             title={status}
                                                         ></span>
-                                                        <span className="text-slate-500 dark:text-slate-400">{new Date(session.date).toLocaleDateString()}</span>
+                                                        <span className="text-gray-500 dark:text-sky-200">{new Date(session.date).toLocaleDateString()}</span>
                                                         {status === 'Absent' && (
                                                             <button 
                                                                 onClick={() => handleGetCatchUpPlan(course, session)}
-                                                                className="ml-3 text-emerald-500 dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition-transform active:scale-90"
+                                                                className="ml-3 text-sky-500 dark:text-sky-400 hover:text-sky-600 dark:hover:text-sky-300 transition-transform active:scale-90"
                                                                 aria-label={`Get AI-assisted catch-up plan for session on ${new Date(session.date).toLocaleDateString()}`}
                                                                 title="Get AI Catch-up Plan"
                                                             >
@@ -360,14 +360,14 @@ const StudentAttendancePage: React.FC<StudentAttendancePageProps> = ({ user, cou
                                 </div>
                             )}
 
-                             <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700/50">
+                             <div className="mt-4 pt-4 border-t border-sky-100 dark:border-blue-800/50">
                                 <div className="flex justify-between items-center">
-                                    <h4 className="text-md font-semibold text-slate-600 dark:text-slate-300">Personalized Learning Path</h4>
+                                    <h4 className="text-md font-semibold text-gray-600 dark:text-gray-300">Personalized Learning Path</h4>
                                     {(learningPathState && learningPathState.plan) && (
                                         <button 
                                             onClick={() => handleGenerateLearningPath(course.id, course.name, user.name, course.attendancePercentage)} 
                                             disabled={learningPathState.isLoading}
-                                            className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline disabled:opacity-50"
+                                            className="text-xs font-semibold text-sky-600 dark:text-sky-400 hover:underline disabled:opacity-50"
                                         >
                                             Regenerate
                                         </button>
@@ -377,23 +377,23 @@ const StudentAttendancePage: React.FC<StudentAttendancePageProps> = ({ user, cou
                                 <div className="mt-3">
                                     {learningPathState?.isLoading ? (
                                         <div className="flex items-center justify-center p-4">
-                                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
-                                            <p className="ml-3 text-slate-500 dark:text-slate-400">Crafting your suggestions...</p>
+                                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-500"></div>
+                                            <p className="ml-3 text-gray-500 dark:text-sky-200">Crafting your suggestions...</p>
                                         </div>
                                     ) : learningPathState?.error ? (
                                         <div className="p-3 text-center bg-red-500/10 text-red-600 dark:text-red-400 rounded-md text-sm">
                                             <strong>Error:</strong> {learningPathState.error}
                                         </div>
                                     ) : learningPathState?.plan ? (
-                                        <div className="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                                        <div className="p-4 bg-sky-50 dark:bg-blue-800/50 rounded-lg">
                                             <PlanRenderer text={learningPathState.plan} />
                                         </div>
                                     ) : (
                                         <div className="text-center">
-                                            <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">Get AI-powered suggestions to improve your learning.</p>
+                                            <p className="text-sm text-gray-500 dark:text-sky-200 mb-3">Get AI-powered suggestions to improve your learning.</p>
                                             <button 
                                                 onClick={() => handleGenerateLearningPath(course.id, course.name, user.name, course.attendancePercentage)}
-                                                className="flex items-center justify-center mx-auto bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-300 font-bold py-2 px-4 rounded-lg hover:bg-emerald-200 dark:hover:bg-emerald-900 transition-all active:scale-95 text-sm"
+                                                className="flex items-center justify-center mx-auto bg-sky-100 dark:bg-sky-900/50 text-sky-600 dark:text-sky-300 font-bold py-2 px-4 rounded-lg hover:bg-sky-200 dark:hover:bg-sky-900 transition-all active:scale-95 text-sm"
                                             >
                                                 <span className="mr-2">{ICONS.lightbulb}</span>
                                                 Generate My Path
@@ -406,7 +406,7 @@ const StudentAttendancePage: React.FC<StudentAttendancePageProps> = ({ user, cou
                     )})}
                 </div>
             ) : (
-                <p className="text-center text-slate-500 dark:text-slate-400 py-10">You are not enrolled in any courses yet.</p>
+                <p className="text-center text-gray-500 dark:text-sky-200 py-10">You are not enrolled in any courses yet.</p>
             )}
 
             {isCatchUpModalOpen && (

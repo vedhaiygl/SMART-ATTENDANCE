@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import type { Course } from '../../types';
@@ -9,7 +10,7 @@ interface ChartProps {
 }
 
 const COLORS = {
-    Excellent: '#10b981', // Green 500
+    Excellent: '#0ea5e9', // Sky 500
     Good: '#3b82f6', // Blue 500
     Poor: '#ef4444', // Red 500
 };
@@ -39,10 +40,10 @@ const StudentStatusPieChart: React.FC<ChartProps> = ({ course }) => {
 
     const chartColors = [COLORS.Excellent, COLORS.Good, COLORS.Poor];
 
-    const tickColor = theme === 'dark' ? '#94a3b8' : '#475569';
-    const tooltipBg = theme === 'dark' ? '#1e293b' : '#ffffff';
-    const tooltipBorder = theme === 'dark' ? '#475569' : '#e2e8f0';
-    const tooltipColor = theme === 'dark' ? '#cbd5e1' : '#1e293b';
+    const tickColor = theme === 'dark' ? '#9ca3af' : '#4b5563';
+    const tooltipBg = theme === 'dark' ? '#1e40af' : '#ffffff';
+    const tooltipBorder = theme === 'dark' ? '#374151' : '#e0f2fe';
+    const tooltipColor = theme === 'dark' ? '#d1d5db' : '#1f2937';
 
     return (
         <ResponsiveContainer width="100%" height="100%">

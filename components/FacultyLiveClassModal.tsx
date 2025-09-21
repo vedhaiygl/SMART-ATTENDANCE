@@ -59,7 +59,7 @@ const FacultyLiveClassModal: React.FC<FacultyLiveClassModalProps> = ({ liveClass
             role="dialog"
         >
             <div 
-                className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-8 max-w-2xl w-full border border-slate-200 dark:border-slate-700 animate-slide-in-top flex flex-col"
+                className="bg-white dark:bg-blue-900 rounded-2xl shadow-2xl p-8 max-w-2xl w-full border border-sky-100 dark:border-blue-800 animate-slide-in-top flex flex-col"
                 style={{ height: 'min(600px, 90vh)' }}
             >
                 <div className="flex justify-between items-start">
@@ -69,20 +69,20 @@ const FacultyLiveClassModal: React.FC<FacultyLiveClassModalProps> = ({ liveClass
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
                             </span>
-                            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Live Class Monitor</h2>
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Live Class Monitor</h2>
                         </div>
-                        <p className="text-slate-500 dark:text-slate-400 mt-1">
-                            Course: <strong className="text-slate-700 dark:text-slate-200">{course.name}</strong>
+                        <p className="text-gray-500 dark:text-sky-200 mt-1">
+                            Course: <strong className="text-gray-700 dark:text-gray-200">{course.name}</strong>
                         </p>
                     </div>
-                    <button onClick={onClose} className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-transform active:scale-90">
+                    <button onClick={onClose} className="text-gray-500 dark:text-sky-200 hover:text-gray-900 dark:hover:text-white transition-transform active:scale-90">
                         {ICONS.close}
                     </button>
                 </div>
 
                 <div className="mt-6 flex-1 overflow-y-auto pr-2 space-y-6">
                     <div>
-                        <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-3">Active Participants ({activeAttendees.length})</h3>
+                        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-3">Active Participants ({activeAttendees.length})</h3>
                         <div className="space-y-2">
                              {activeAttendees.length > 0 ? activeAttendees.map(attendee => {
                                 const durationMs = Date.now() - new Date(attendee.joinTime).getTime();
@@ -95,25 +95,25 @@ const FacultyLiveClassModal: React.FC<FacultyLiveClassModalProps> = ({ liveClass
                                         </p>
                                     </div>
                                 );
-                            }) : <p className="text-sm text-slate-500 dark:text-slate-400 italic">No students have joined yet.</p>}
+                            }) : <p className="text-sm text-gray-500 dark:text-sky-200 italic">No students have joined yet.</p>}
                         </div>
                     </div>
                      <div>
-                        <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-3">Participation History ({pastAttendees.length})</h3>
+                        <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-3">Participation History ({pastAttendees.length})</h3>
                         <div className="space-y-2">
                             {pastAttendees.length > 0 ? pastAttendees.map(attendee => (
-                                <div key={attendee.studentId} className="flex justify-between items-center p-3 bg-slate-100 dark:bg-slate-700/50 rounded-lg">
-                                    <p className="font-semibold text-slate-600 dark:text-slate-300">{attendee.studentName}</p>
-                                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                                <div key={attendee.studentId} className="flex justify-between items-center p-3 bg-sky-100 dark:bg-blue-800/50 rounded-lg">
+                                    <p className="font-semibold text-gray-600 dark:text-gray-300">{attendee.studentName}</p>
+                                    <p className="text-sm text-gray-500 dark:text-sky-200">
                                         Stayed for {formatDuration(attendee.durationMinutes)}
                                     </p>
                                 </div>
-                            )) : <p className="text-sm text-slate-500 dark:text-slate-400 italic">No students have left the session yet.</p>}
+                            )) : <p className="text-sm text-gray-500 dark:text-sky-200 italic">No students have left the session yet.</p>}
                         </div>
                     </div>
                 </div>
 
-                <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
+                <div className="mt-6 pt-6 border-t border-sky-100 dark:border-blue-800">
                     <button
                         onClick={handleEndClass}
                         className="w-full bg-red-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-red-500 transition-all active:scale-95"

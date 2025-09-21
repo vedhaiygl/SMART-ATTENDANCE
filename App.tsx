@@ -143,7 +143,7 @@ function AppContent() {
   
   if (user.role === 'faculty') {
       return (
-        <div className="flex h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-sans">
+        <div className="flex h-screen bg-zinc-100 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 font-sans">
           <Sidebar 
             view={facultyView} 
             setView={setFacultyView} 
@@ -157,7 +157,7 @@ function AppContent() {
                 onLogout={handleLogout} 
                 onMenuClick={() => setSidebarOpen(true)}
             />
-            <main className="flex-1 overflow-x-hidden overflow-y-auto bg-slate-50 dark:bg-slate-900 p-6 lg:p-8">
+            <main className="flex-1 overflow-x-hidden overflow-y-auto bg-zinc-100 dark:bg-zinc-900 p-6 lg:p-8">
               {renderFacultyView()}
             </main>
           </div>

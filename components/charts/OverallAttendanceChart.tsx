@@ -27,11 +27,11 @@ const OverallAttendanceChart: React.FC<ChartProps> = ({ course }) => {
         ? data.reduce((acc, curr) => acc + curr.attendance, 0) / data.length
         : 0;
     
-    const tickColor = theme === 'dark' ? '#94a3b8' : '#475569';
-    const gridColor = theme === 'dark' ? '#334155' : '#e2e8f0'; // slate-700, slate-200
-    const tooltipBg = theme === 'dark' ? 'rgba(30, 41, 59, 0.8)' : 'rgba(255, 255, 255, 0.8)';
-    const tooltipBorder = theme === 'dark' ? '#475569' : '#e2e8f0';
-    const tooltipColor = theme === 'dark' ? '#cbd5e1' : '#1e293b';
+    const tickColor = theme === 'dark' ? '#9ca3af' : '#4b5563';
+    const gridColor = theme === 'dark' ? '#1e40af' : '#e0f2fe';
+    const tooltipBg = theme === 'dark' ? 'rgba(30, 64, 175, 0.8)' : 'rgba(255, 255, 255, 0.8)';
+    const tooltipBorder = theme === 'dark' ? '#1e40af' : '#e0f2fe';
+    const tooltipColor = theme === 'dark' ? '#d1d5db' : '#1f2937';
 
     return (
         <ResponsiveContainer width="100%" height="100%">
@@ -53,7 +53,7 @@ const OverallAttendanceChart: React.FC<ChartProps> = ({ course }) => {
                         boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
                         backdropFilter: 'blur(4px)',
                     }}
-                    cursor={{ stroke: '#34d399', strokeWidth: 1, strokeDasharray: '3 3' }}
+                    cursor={{ stroke: '#0ea5e9', strokeWidth: 1, strokeDasharray: '3 3' }}
                 />
                 <Legend wrapperStyle={{fontSize: "14px", color: tickColor}} verticalAlign="top" align="right" />
                 
@@ -63,16 +63,16 @@ const OverallAttendanceChart: React.FC<ChartProps> = ({ course }) => {
                         label={{ 
                             value: `Avg ${averageAttendance.toFixed(0)}%`, 
                             position: 'insideTopRight', 
-                            fill: theme === 'dark' ? '#f59e0b' : '#d97706',
+                            fill: theme === 'dark' ? '#a5b4fc' : '#6366f1',
                             fontSize: 12,
                             fontWeight: 'bold',
                         }} 
-                        stroke={theme === 'dark' ? '#f59e0b' : '#d97706'} 
+                        stroke={theme === 'dark' ? '#818cf8' : '#6366f1'} 
                         strokeDasharray="4 4" 
                     />
                 )}
                 
-                <Line type="monotone" dataKey="attendance" name="Attendance %" stroke="#10b981" strokeWidth={2} activeDot={{ r: 8, stroke: '#10b981', strokeWidth: 2 }} dot={{fill: '#10b981', r:4, strokeWidth: 0}} />
+                <Line type="monotone" dataKey="attendance" name="Attendance %" stroke="#0284c7" strokeWidth={2} activeDot={{ r: 8, stroke: '#0284c7', strokeWidth: 2 }} dot={{fill: '#0284c7', r:4, strokeWidth: 0}} />
             </LineChart>
         </ResponsiveContainer>
     );

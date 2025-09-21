@@ -122,10 +122,10 @@ const StudyBuddyPage: React.FC<{ user: User, courses: Course[] }> = ({ user, cou
     }, [chat, isLoading, userInput]);
 
     return (
-        <div className="mt-6 flex flex-col h-[calc(100vh-220px)] bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-            <div className="p-4 border-b border-slate-200 dark:border-slate-700">
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">AI Study Buddy</h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400">Your personal academic assistant.</p>
+        <div className="mt-6 flex flex-col h-[calc(100vh-220px)] bg-white dark:bg-blue-900 rounded-xl border border-sky-100 dark:border-blue-800">
+            <div className="p-4 border-b border-sky-100 dark:border-blue-800">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">AI Study Buddy</h2>
+                <p className="text-sm text-gray-500 dark:text-sky-200">Your personal academic assistant.</p>
             </div>
             {error ? (
                 <div className="flex-1 flex items-center justify-center p-4">
@@ -137,22 +137,22 @@ const StudyBuddyPage: React.FC<{ user: User, courses: Course[] }> = ({ user, cou
                         {history.map((msg, index) => (
                             <div key={index} className={`flex items-end gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                 {msg.role === 'model' && (
-                                    <div className="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center flex-shrink-0">
+                                    <div className="w-8 h-8 rounded-full bg-sky-500 text-white flex items-center justify-center flex-shrink-0">
                                         {ICONS.studyBuddy}
                                     </div>
                                 )}
-                                <div className={`max-w-md lg:max-w-lg p-3 rounded-2xl ${msg.role === 'user' ? 'bg-emerald-600 text-white rounded-br-none' : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-bl-none'}`}>
+                                <div className={`max-w-md lg:max-w-lg p-3 rounded-2xl ${msg.role === 'user' ? 'bg-sky-600 text-white rounded-br-none' : 'bg-sky-100 dark:bg-blue-800 text-gray-800 dark:text-gray-200 rounded-bl-none'}`}>
                                     {isLoading && index === history.length - 1 && msg.role === 'model' && msg.text.length === 0 ? (
                                         <div className="flex items-center space-x-1 p-1">
-                                            <span className="w-2 h-2 bg-slate-400 rounded-full animate-pulse" style={{animationDelay: '0s'}}></span>
-                                            <span className="w-2 h-2 bg-slate-400 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></span>
-                                            <span className="w-2 h-2 bg-slate-400 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></span>
+                                            <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{animationDelay: '0s'}}></span>
+                                            <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></span>
+                                            <span className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></span>
                                         </div>
                                     ) : (
                                         <>
                                             <SimpleMarkdown text={msg.text} />
                                             {isLoading && index === history.length - 1 && msg.role === 'model' && (
-                                                <div className="inline-block w-2 h-4 bg-slate-600 dark:bg-slate-300 ml-1 animate-pulse align-bottom"></div>
+                                                <div className="inline-block w-2 h-4 bg-gray-600 dark:bg-gray-300 ml-1 animate-pulse align-bottom"></div>
                                             )}
                                         </>
                                     )}
@@ -160,7 +160,7 @@ const StudyBuddyPage: React.FC<{ user: User, courses: Course[] }> = ({ user, cou
                             </div>
                         ))}
                     </div>
-                    <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+                    <div className="p-4 border-t border-sky-100 dark:border-blue-800 bg-white dark:bg-blue-900">
                         <form onSubmit={handleSendMessage} className="flex items-center space-x-4">
                             <input
                                 type="text"
@@ -168,12 +168,12 @@ const StudyBuddyPage: React.FC<{ user: User, courses: Course[] }> = ({ user, cou
                                 onChange={(e) => setUserInput(e.target.value)}
                                 placeholder={enrolledCourses.length > 0 ? "Ask a question about your courses..." : "You are not enrolled in any courses."}
                                 disabled={isLoading || enrolledCourses.length === 0}
-                                className="flex-1 bg-slate-100 dark:bg-slate-700 w-full text-slate-900 dark:text-white rounded-full py-2 px-4 border border-slate-300 dark:border-slate-600 focus:ring-emerald-500 focus:border-emerald-500"
+                                className="flex-1 bg-sky-100 dark:bg-blue-800 w-full text-gray-900 dark:text-white rounded-full py-2 px-4 border border-sky-200 dark:border-blue-700 focus:ring-sky-500 focus:border-sky-500"
                             />
                             <button
                                 type="submit"
                                 disabled={isLoading || !userInput.trim() || enrolledCourses.length === 0}
-                                className="bg-emerald-600 text-white font-bold p-3 rounded-full hover:bg-emerald-500 transition-all active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
+                                className="bg-sky-600 text-white font-bold p-3 rounded-full hover:bg-sky-500 transition-all active:scale-95 disabled:bg-gray-400 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                     <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />

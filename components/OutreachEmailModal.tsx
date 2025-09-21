@@ -35,8 +35,8 @@ const OutreachEmailModal: React.FC<OutreachEmailModalProps> = ({ onClose, isLoad
         if (isLoading) {
             return (
                 <div className="flex flex-col items-center justify-center h-48">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
-                    <p className="text-slate-600 dark:text-slate-300 mt-4">Generating email...</p>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-500"></div>
+                    <p className="text-gray-600 dark:text-gray-300 mt-4">Generating email...</p>
                 </div>
             );
         }
@@ -45,14 +45,14 @@ const OutreachEmailModal: React.FC<OutreachEmailModalProps> = ({ onClose, isLoad
             return (
                  <div className="text-center h-48 flex flex-col justify-center">
                     <h3 className="text-xl font-bold text-red-600 dark:text-red-400">Generation Failed</h3>
-                    <p className="text-slate-600 dark:text-slate-300 mt-2 bg-red-500/10 p-3 rounded-md">{error}</p>
+                    <p className="text-gray-600 dark:text-gray-300 mt-2 bg-red-500/10 p-3 rounded-md">{error}</p>
                 </div>
             );
         }
 
         if (emailContent) {
             return (
-                <div className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap font-sans bg-slate-100 dark:bg-slate-900 p-4 rounded-md">
+                <div className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap font-sans bg-sky-100 dark:bg-blue-800 p-4 rounded-md">
                     {emailContent}
                 </div>
             );
@@ -69,18 +69,18 @@ const OutreachEmailModal: React.FC<OutreachEmailModalProps> = ({ onClose, isLoad
             role="dialog"
         >
             <div
-                className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-8 max-w-2xl w-full border border-slate-200 dark:border-slate-700 relative animate-slide-in-top"
+                className="bg-white dark:bg-blue-900 rounded-2xl shadow-2xl p-8 max-w-2xl w-full border border-sky-100 dark:border-blue-800 relative animate-slide-in-top"
                 onClick={e => e.stopPropagation()}
             >
-                <button onClick={onClose} className="absolute top-4 right-4 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-transform active:scale-90" aria-label="Close">
+                <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 dark:text-sky-200 hover:text-gray-900 dark:hover:text-white transition-transform active:scale-90" aria-label="Close">
                     {ICONS.close}
                 </button>
                 <div className="flex items-center mb-4">
-                    <span className="text-emerald-500 dark:text-emerald-400 mr-2">{ICONS.mail}</span>
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Generated Outreach Email</h2>
+                    <span className="text-sky-500 dark:text-sky-400 mr-2">{ICONS.mail}</span>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Generated Outreach Email</h2>
                 </div>
-                <p className="text-slate-500 dark:text-slate-400 mb-6">
-                    A draft for <strong className="text-slate-800 dark:text-slate-200">{studentName}</strong> regarding <strong className="text-slate-800 dark:text-slate-200">{courseName}</strong>.
+                <p className="text-gray-500 dark:text-sky-200 mb-6">
+                    A draft for <strong className="text-gray-800 dark:text-gray-200">{studentName}</strong> regarding <strong className="text-gray-800 dark:text-gray-200">{courseName}</strong>.
                 </p>
                 <div className="min-h-[240px]">
                     {renderContent()}
@@ -89,7 +89,7 @@ const OutreachEmailModal: React.FC<OutreachEmailModalProps> = ({ onClose, isLoad
                     <button
                         onClick={handleCopy}
                         disabled={!emailContent || copyStatus === 'copied'}
-                        className="bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-emerald-500 transition-all active:scale-95 disabled:bg-slate-400"
+                        className="bg-sky-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-sky-500 transition-all active:scale-95 disabled:bg-gray-400"
                     >
                         {copyStatus === 'copied' ? 'Copied!' : 'Copy to Clipboard'}
                     </button>

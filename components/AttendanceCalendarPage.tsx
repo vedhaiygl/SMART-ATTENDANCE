@@ -83,21 +83,21 @@ const AttendanceCalendarPage: React.FC<AttendanceCalendarPageProps> = ({ user, c
         const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
         return (
-            <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
+            <div className="bg-white dark:bg-blue-900 rounded-xl border border-sky-100 dark:border-blue-800 p-6">
                 <div className="flex justify-between items-center mb-4">
-                    <button onClick={handlePrevMonth} className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" aria-label="Previous month">
+                    <button onClick={handlePrevMonth} className="p-2 rounded-full hover:bg-sky-100 dark:hover:bg-blue-800 transition-colors" aria-label="Previous month">
                         {ICONS.chevronLeft}
                     </button>
-                    <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                         {currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
                     </h2>
-                    <button onClick={handleNextMonth} className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" aria-label="Next month">
+                    <button onClick={handleNextMonth} className="p-2 rounded-full hover:bg-sky-100 dark:hover:bg-blue-800 transition-colors" aria-label="Next month">
                         {ICONS.chevronRight}
                     </button>
                 </div>
                 <div className="grid grid-cols-7 gap-1">
                     {daysOfWeek.map(day => (
-                        <div key={day} className="text-center font-semibold text-xs text-slate-500 dark:text-slate-400 py-2">
+                        <div key={day} className="text-center font-semibold text-xs text-gray-500 dark:text-sky-200 py-2">
                             {day}
                         </div>
                     ))}
@@ -110,16 +110,16 @@ const AttendanceCalendarPage: React.FC<AttendanceCalendarPageProps> = ({ user, c
                         return (
                             <div
                                 key={index}
-                                className={`h-28 border border-slate-200 dark:border-slate-700/50 rounded-lg p-2 flex flex-col ${isCurrentMonth ? 'bg-white dark:bg-slate-800' : 'bg-slate-50 dark:bg-slate-800/50'}`}
+                                className={`h-28 border border-sky-100 dark:border-blue-800/50 rounded-lg p-2 flex flex-col ${isCurrentMonth ? 'bg-white dark:bg-blue-900' : 'bg-sky-50 dark:bg-blue-900/50'}`}
                             >
-                                <span className={`font-semibold text-sm ${isToday ? 'bg-emerald-600 text-white rounded-full h-6 w-6 flex items-center justify-center' : ''} ${!isCurrentMonth ? 'text-slate-400 dark:text-slate-500' : ''}`}>
+                                <span className={`font-semibold text-sm ${isToday ? 'bg-sky-600 text-white rounded-full h-6 w-6 flex items-center justify-center' : ''} ${!isCurrentMonth ? 'text-gray-400 dark:text-gray-500' : ''}`}>
                                     {day.getDate()}
                                 </span>
                                 <div className="mt-1 space-y-1 overflow-y-auto text-xs">
                                     {records.map((record, recIndex) => (
                                         <div key={recIndex} className="flex items-center" title={`${record.courseName}: ${record.status}`}>
                                             <span className={`w-2 h-2 rounded-full mr-1.5 flex-shrink-0 ${record.status === 'Present' ? 'bg-green-500' : 'bg-red-500'}`}></span>
-                                            <span className="truncate text-slate-600 dark:text-slate-300">{record.courseCode}</span>
+                                            <span className="truncate text-gray-600 dark:text-gray-300">{record.courseCode}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -134,8 +134,8 @@ const AttendanceCalendarPage: React.FC<AttendanceCalendarPageProps> = ({ user, c
     return (
         <div className="mt-6 space-y-6">
             <div>
-                <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-1">Attendance Calendar</h2>
-                <p className="text-slate-500 dark:text-slate-400">View your session attendance on a monthly calendar.</p>
+                <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-1">Attendance Calendar</h2>
+                <p className="text-gray-500 dark:text-sky-200">View your session attendance on a monthly calendar.</p>
             </div>
             {renderCalendar()}
         </div>

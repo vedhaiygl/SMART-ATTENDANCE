@@ -31,7 +31,7 @@ const ThemeToggle: React.FC = () => {
     return (
         <button
             onClick={toggleTheme}
-            className="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-90"
+            className="p-2 rounded-full text-gray-500 dark:text-sky-200 hover:bg-sky-100 dark:hover:bg-blue-800 transition-all active:scale-90"
             aria-label="Toggle theme"
         >
             {theme === 'light' ? ICONS.moon : ICONS.sun}
@@ -148,15 +148,15 @@ const StudentView: React.FC<StudentViewProps> = ({ user, onLogout, markAttendanc
     }
 
     return (
-        <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-sans">
-            <header className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center sticky top-0 z-20">
-                <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Student Portal</h1>
+        <div className="flex flex-col min-h-screen bg-sky-50 dark:bg-blue-950 text-gray-800 dark:text-gray-200 font-sans">
+            <header className="bg-white/80 dark:bg-blue-900/80 backdrop-blur-sm p-4 border-b border-sky-100 dark:border-blue-800 flex justify-between items-center sticky top-0 z-20">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Student Portal</h1>
                 <div className="flex items-center space-x-4">
-                    <span className="text-slate-600 dark:text-slate-300 hidden sm:inline">Welcome, {user.name}</span>
+                    <span className="text-gray-600 dark:text-gray-300 hidden sm:inline">Welcome, {user.name}</span>
                     <ThemeToggle />
                     <button
                         onClick={onLogout}
-                        className="bg-emerald-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-emerald-500 transition-all active:scale-95 text-sm"
+                        className="bg-sky-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-sky-500 transition-all active:scale-95 text-sm"
                     >
                         Logout
                     </button>
@@ -196,40 +196,40 @@ const StudentView: React.FC<StudentViewProps> = ({ user, onLogout, markAttendanc
             
             <main className="flex-1 flex flex-col items-center p-4 sm:p-6">
                 <div className="w-full max-w-4xl">
-                    <div className="flex space-x-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg overflow-x-auto">
+                    <div className="flex space-x-2 p-1 bg-sky-100 dark:bg-blue-800 rounded-lg overflow-x-auto">
                         <button
                             onClick={() => setView('liveClasses')}
-                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'liveClasses' ? 'bg-emerald-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'liveClasses' ? 'bg-sky-600 text-white' : 'text-gray-600 dark:text-gray-300 hover:bg-sky-200 dark:hover:bg-blue-700'}`}
                         >
                             Live Classes
                         </button>
                         <button
                             onClick={() => setView('attendance')}
-                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'attendance' ? 'bg-emerald-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'attendance' ? 'bg-sky-600 text-white' : 'text-gray-600 dark:text-gray-300 hover:bg-sky-200 dark:hover:bg-blue-700'}`}
                         >
                             My Attendance
                         </button>
                         <button
                             onClick={() => setView('scan')}
-                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'scan' ? 'bg-emerald-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'scan' ? 'bg-sky-600 text-white' : 'text-gray-600 dark:text-gray-300 hover:bg-sky-200 dark:hover:bg-blue-700'}`}
                         >
                             Scan Code
                         </button>
                         <button
                             onClick={() => setView('leaderboard')}
-                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'leaderboard' ? 'bg-emerald-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'leaderboard' ? 'bg-sky-600 text-white' : 'text-gray-600 dark:text-gray-300 hover:bg-sky-200 dark:hover:bg-blue-700'}`}
                         >
                             Leaderboard
                         </button>
                          <button
                             onClick={() => setView('calendar')}
-                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'calendar' ? 'bg-emerald-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'calendar' ? 'bg-sky-600 text-white' : 'text-gray-600 dark:text-gray-300 hover:bg-sky-200 dark:hover:bg-blue-700'}`}
                         >
                             Calendar
                         </button>
                          <button
                             onClick={() => setView('studyBuddy')}
-                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'studyBuddy' ? 'bg-emerald-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+                            className={`w-full text-center font-medium p-2 rounded-md transition-all active:scale-95 ${view === 'studyBuddy' ? 'bg-sky-600 text-white' : 'text-gray-600 dark:text-gray-300 hover:bg-sky-200 dark:hover:bg-blue-700'}`}
                         >
                             Study Buddy
                         </button>

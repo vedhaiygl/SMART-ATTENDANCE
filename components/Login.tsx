@@ -113,28 +113,28 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
 
     if (mode === 'select') {
         return (
-            <div className="flex items-center justify-center h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white">
-                <div className="w-full max-w-sm p-8 space-y-6 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700">
+            <div className="flex items-center justify-center h-screen bg-sky-50 dark:bg-blue-950 text-gray-900 dark:text-white">
+                <div className="w-full max-w-sm p-8 space-y-6 bg-white dark:bg-blue-900 rounded-2xl shadow-2xl border border-sky-100 dark:border-blue-800">
                     <div className="text-center">
-                        <div className="text-3xl font-bold text-slate-900 dark:text-white mb-2 flex items-center justify-center">
-                            <span className="bg-emerald-600 text-white p-2 rounded-lg mr-3">
+                        <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center justify-center">
+                            <span className="bg-sky-600 text-white p-2 rounded-lg mr-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                             </span>
                             ByteForce
                         </div>
-                        <p className="text-slate-500 dark:text-slate-400">Please select your role to login.</p>
+                        <p className="text-gray-500 dark:text-sky-200">Please select your role to login.</p>
                     </div>
                     
                     <div className="space-y-4">
-                        <button onClick={() => setMode('faculty')} className="w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-500 transition-all duration-150 transform hover:scale-105 active:scale-95">
+                        <button onClick={() => setMode('faculty')} className="w-full bg-sky-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-sky-500 transition-all duration-150 transform hover:scale-105 active:scale-95">
                             Faculty Portal
                         </button>
-                        <button onClick={() => setMode('student')} className="w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-500 transition-all duration-150 transform hover:scale-105 active:scale-95">
+                        <button onClick={() => setMode('student')} className="w-full bg-sky-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-sky-500 transition-all duration-150 transform hover:scale-105 active:scale-95">
                             Student Portal
                         </button>
                     </div>
 
-                    <div className="mt-4 text-xs text-slate-400 dark:text-slate-500 text-center">
+                    <div className="mt-4 text-xs text-gray-400 dark:text-gray-500 text-center">
                         <p>© 2024 Your University. All rights reserved.</p>
                     </div>
                 </div>
@@ -144,21 +144,21 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
 
     if (mode === 'forgot') {
         return (
-            <div className="flex items-center justify-center h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white">
-                <div className="w-full max-w-sm p-8 space-y-6 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700">
+            <div className="flex items-center justify-center h-screen bg-sky-50 dark:bg-blue-950 text-gray-900 dark:text-white">
+                <div className="w-full max-w-sm p-8 space-y-6 bg-white dark:bg-blue-900 rounded-2xl shadow-2xl border border-sky-100 dark:border-blue-800">
                     <div className="text-center">
-                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Reset Password</h2>
-                        <p className="text-slate-500 dark:text-slate-400 mt-2">Enter your email to receive a reset link.</p>
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Reset Password</h2>
+                        <p className="text-gray-500 dark:text-sky-200 mt-2">Enter your email to receive a reset link.</p>
                     </div>
                     <form onSubmit={handleForgotPasswordSubmit} className="space-y-6">
                         <div>
-                            <label htmlFor="reset-email" className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">
+                            <label htmlFor="reset-email" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">
                                 Email Address
                             </label>
                             <input
                                 id="reset-email" name="reset-email" type="email" autoComplete="email" required value={resetEmail}
                                 onChange={(e) => { setResetEmail(e.target.value); setFormErrors(prev => ({...prev, resetEmail: undefined})); }}
-                                className={`w-full px-3 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500`}
+                                className={`w-full px-3 py-2 bg-sky-100 dark:bg-blue-800 border border-sky-200 dark:border-blue-700 rounded-md text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500`}
                                 placeholder="e.g., name@university.edu"
                             />
                             {formErrors.resetEmail && <p className="mt-2 text-xs text-red-500">{formErrors.resetEmail}</p>}
@@ -168,13 +168,13 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
                         {infoMessage && <div className="p-3 bg-green-500/20 text-green-700 dark:text-green-300 rounded-md text-sm font-medium text-center">{infoMessage}</div>}
                         
                         <div>
-                            <button type="submit" disabled={loading || !!infoMessage} className={`w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-500 transition-transform duration-150 transform hover:scale-105 active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed`}>
+                            <button type="submit" disabled={loading || !!infoMessage} className={`w-full bg-sky-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-sky-500 transition-transform duration-150 transform hover:scale-105 active:scale-95 disabled:bg-gray-400 dark:disabled:bg-gray-700 disabled:cursor-not-allowed`}>
                                 {loading ? 'Sending...' : 'Send Reset Link'}
                             </button>
                         </div>
                     </form>
                     <div className="text-center">
-                        <button onClick={() => setMode(previousLoginMode)} className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:underline disabled:text-slate-600" disabled={loading}>
+                        <button onClick={() => setMode(previousLoginMode)} className="text-sm text-gray-500 dark:text-sky-200 hover:text-gray-900 dark:hover:text-white hover:underline disabled:text-gray-600" disabled={loading}>
                            &larr; Back to Login
                         </button>
                     </div>
@@ -184,42 +184,42 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
     }
 
     const title = mode === 'faculty' ? 'Faculty' : 'Student';
-    const accentColor = 'emerald';
+    const accentColor = 'sky';
     const formTitle = `${title} Sign In`;
     const buttonTitle = 'Login';
     const loadingText = 'Logging in...';
 
     return (
-        <div className="flex items-center justify-center h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white">
-            <div className={`w-full max-w-sm p-8 space-y-6 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border-2 transition-colors duration-300 border-emerald-500`}>
+        <div className="flex items-center justify-center h-screen bg-sky-50 dark:bg-blue-950 text-gray-900 dark:text-white">
+            <div className={`w-full max-w-sm p-8 space-y-6 bg-white dark:bg-blue-900 rounded-2xl shadow-2xl border-2 transition-colors duration-300 border-sky-500`}>
                 <div className="text-center">
-                    <div className="text-3xl font-bold text-slate-900 dark:text-white mb-2 flex items-center justify-center">
+                    <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center justify-center">
                         <span className={`bg-${accentColor}-600 text-white p-2 rounded-lg mr-3`}>
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         </span>
                         {formTitle}
                     </div>
-                    <p className="text-slate-500 dark:text-slate-400">
+                    <p className="text-gray-500 dark:text-sky-200">
                         Sign in to continue.
                     </p>
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label htmlFor="username" className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Email Address</label>
+                        <label htmlFor="username" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">Email Address</label>
                         <input id="username" name="username" type="email" autoComplete="username" required value={username}
                             onChange={(e) => { setUsername(e.target.value); setFormErrors(prev => ({...prev, username: undefined, general: undefined})); }}
-                            className={`w-full px-3 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-${accentColor}-500 focus:border-${accentColor}-500`}
+                            className={`w-full px-3 py-2 bg-sky-100 dark:bg-blue-800 border border-sky-200 dark:border-blue-700 rounded-md text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-${accentColor}-500 focus:border-${accentColor}-500`}
                             placeholder="e.g., name@university.edu" />
                         {formErrors.username && <p className="mt-2 text-xs text-red-500">{formErrors.username}</p>}
                     </div>
                     <div>
-                        <label htmlFor="password"className="block text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Password</label>
+                        <label htmlFor="password"className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">Password</label>
                         <input id="password" name="password" type="password" autoComplete="current-password" required value={password}
                             onChange={(e) => { 
                                 setPassword(e.target.value);
                                 setFormErrors(prev => ({...prev, password: undefined, general: undefined}));
                             }}
-                            className={`w-full px-3 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-${accentColor}-500 focus:border-${accentColor}-500`}
+                            className={`w-full px-3 py-2 bg-sky-100 dark:bg-blue-800 border border-sky-200 dark:border-blue-700 rounded-md text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-${accentColor}-500 focus:border-${accentColor}-500`}
                             placeholder="••••••••" />
                         {formErrors.password && <p className="mt-2 text-xs text-red-500">{formErrors.password}</p>}
                     </div>
@@ -232,9 +232,9 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
                                 type="checkbox"
                                 checked={rememberMe}
                                 onChange={(e) => setRememberMe(e.target.checked)}
-                                className={`h-4 w-4 rounded text-${accentColor}-600 focus:ring-${accentColor}-500 border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-700`}
+                                className={`h-4 w-4 rounded text-${accentColor}-600 focus:ring-${accentColor}-500 border-sky-200 dark:border-blue-700 bg-sky-100 dark:bg-blue-800`}
                             />
-                            <label htmlFor="remember-me" className="ml-2 block text-sm text-slate-600 dark:text-slate-300">
+                            <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-600 dark:text-gray-300">
                                 Remember me
                             </label>
                         </div>
@@ -249,14 +249,14 @@ const Login: React.FC<LoginProps> = ({ onLogin, onForgotPassword }) => {
                     {infoMessage && <div className="p-3 bg-sky-500/20 text-sky-700 dark:text-sky-300 rounded-md text-sm font-medium text-center">{infoMessage}</div>}
                     
                     <div>
-                        <button type="submit" disabled={loading} className={`w-full bg-${accentColor}-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-${accentColor}-500 transition-transform duration-150 transform hover:scale-105 active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed`}>
+                        <button type="submit" disabled={loading} className={`w-full bg-${accentColor}-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-${accentColor}-500 transition-transform duration-150 transform hover:scale-105 active:scale-95 disabled:bg-gray-400 dark:disabled:bg-gray-700 disabled:cursor-not-allowed`}>
                             {loading ? loadingText : buttonTitle}
                         </button>
                     </div>
                 </form>
 
                 <div className="text-center">
-                    <button onClick={handleBackToSelect} className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:underline disabled:text-slate-600" disabled={loading}>
+                    <button onClick={handleBackToSelect} className="text-sm text-gray-500 dark:text-sky-200 hover:text-gray-900 dark:hover:text-white hover:underline disabled:text-gray-600" disabled={loading}>
                         &larr; Back to role selection
                     </button>
                 </div>

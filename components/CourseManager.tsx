@@ -188,7 +188,7 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
             <td className="p-3 text-center">
                 <button
                     onClick={handleToggle}
-                    className="group w-5 h-5 rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-800 focus:ring-emerald-500"
+                    className="group w-5 h-5 rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-zinc-800 focus:ring-amber-500"
                     aria-label={`Change attendance for ${formattedDate}. Current status: ${currentStatus}. Click to mark as ${nextStatus}.`}
                     title={`Click to mark as ${nextStatus}`}
                 >
@@ -202,28 +202,28 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
         <div className="space-y-6">
             <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Course Management</h2>
-                    <p className="text-slate-500 dark:text-slate-400 mt-1">Select a course to view attendance and start new sessions.</p>
+                    <h2 className="text-3xl font-bold text-zinc-900 dark:text-white">Course Management</h2>
+                    <p className="text-zinc-500 dark:text-zinc-400 mt-1">Select a course to view attendance and start new sessions.</p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-row lg:items-center gap-4">
                     <div className="flex items-center space-x-2">
-                        <label htmlFor="limit-input" className="text-slate-600 dark:text-slate-300 font-medium text-sm whitespace-nowrap">Scan Limit:</label>
+                        <label htmlFor="limit-input" className="text-zinc-600 dark:text-zinc-300 font-medium text-sm whitespace-nowrap">Scan Limit:</label>
                         <input
                             id="limit-input"
                             type="number"
                             value={limit}
                             onChange={e => setLimit(parseInt(e.target.value, 10) || 0)}
-                            className="bg-slate-100 dark:bg-slate-700 w-full sm:w-24 text-slate-900 dark:text-white rounded-md py-2 px-3 border border-slate-300 dark:border-slate-600 focus:ring-emerald-500 focus:border-emerald-500"
+                            className="bg-zinc-100 dark:bg-zinc-700 w-full sm:w-24 text-zinc-900 dark:text-white rounded-md py-2 px-3 border border-zinc-200 dark:border-zinc-600 focus:ring-amber-500 focus:border-amber-500"
                             min="1"
                         />
                     </div>
                     <div className="flex items-center space-x-2">
-                        <label htmlFor="session-type-select" className="text-slate-600 dark:text-slate-300 font-medium text-sm whitespace-nowrap">Session Type:</label>
+                        <label htmlFor="session-type-select" className="text-zinc-600 dark:text-zinc-300 font-medium text-sm whitespace-nowrap">Session Type:</label>
                         <select
                             id="session-type-select"
                             value={sessionType}
                             onChange={e => setSessionType(e.target.value as 'Online' | 'Offline')}
-                            className="bg-slate-100 dark:bg-slate-700 w-full sm:w-28 text-slate-900 dark:text-white rounded-md py-2 px-3 border border-slate-300 dark:border-slate-600 focus:ring-emerald-500 focus:border-emerald-500"
+                            className="bg-zinc-100 dark:bg-zinc-700 w-full sm:w-28 text-zinc-900 dark:text-white rounded-md py-2 px-3 border border-zinc-200 dark:border-zinc-600 focus:ring-amber-500 focus:border-amber-500"
                         >
                             <option value="Offline">Offline</option>
                             <option value="Online">Online</option>
@@ -236,14 +236,14 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
                             checked={livenessCheckEnabled}
                             onChange={e => setLivenessCheckEnabled(e.target.checked)}
                             disabled={sessionType !== 'Online'}
-                            className="h-4 w-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-700 disabled:cursor-not-allowed"
+                            className="h-4 w-4 rounded text-amber-600 focus:ring-amber-500 border-zinc-200 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-700 disabled:cursor-not-allowed"
                         />
-                        <label htmlFor="liveness-check" className={`text-slate-600 dark:text-slate-300 font-medium text-sm whitespace-nowrap ${sessionType !== 'Online' ? 'cursor-not-allowed' : ''}`}>Enable Liveness Check</label>
+                        <label htmlFor="liveness-check" className={`text-zinc-600 dark:text-zinc-300 font-medium text-sm whitespace-nowrap ${sessionType !== 'Online' ? 'cursor-not-allowed' : ''}`}>Enable Liveness Check</label>
                     </div>
                      <button
                         onClick={handleExportStudentsCSV}
                         disabled={!selectedCourseId}
-                        className="flex items-center justify-center bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-2 px-4 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-all active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
+                        className="flex items-center justify-center bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-200 font-bold py-2 px-4 rounded-lg hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-all active:scale-95 disabled:bg-gray-400 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
                     >
                         {ICONS.users}
                         <span className="ml-2">Export Students</span>
@@ -251,7 +251,7 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
                      <button
                         onClick={handleExportCSV}
                         disabled={!selectedCourseId}
-                        className="flex items-center justify-center bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-2 px-4 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-all active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
+                        className="flex items-center justify-center bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-200 font-bold py-2 px-4 rounded-lg hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-all active:scale-95 disabled:bg-gray-400 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
                     >
                         {ICONS.export}
                         <span className="ml-2">Export Attendance</span>
@@ -259,14 +259,14 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
                     <button
                         onClick={handleStartSession}
                         disabled={!selectedCourseId}
-                        className="bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-emerald-500 transition-all active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
+                        className="bg-amber-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-amber-600 transition-all active:scale-95 disabled:bg-gray-400 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
                     >
                         Start New Session
                     </button>
                     <button
                         onClick={handleStartLiveClass}
                         disabled={!selectedCourseId}
-                        className="flex items-center justify-center bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-500 transition-all active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
+                        className="flex items-center justify-center bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-500 transition-all active:scale-95 disabled:bg-gray-400 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
                     >
                         <span className="relative flex h-3 w-3 mr-2">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
@@ -277,12 +277,12 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
                 </div>
             </div>
             
-            <div className="flex space-x-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-lg overflow-x-auto">
+            <div className="flex space-x-2 p-1 bg-zinc-100 dark:bg-zinc-700 rounded-lg overflow-x-auto">
                 {courses.map(course => (
                     <button
                         key={course.id}
                         onClick={() => setSelectedCourseId(course.id)}
-                        className={`flex-shrink-0 text-center font-medium p-2 rounded-md transition-all active:scale-95 whitespace-nowrap px-4 ${selectedCourseId === course.id ? 'bg-emerald-600 text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}`}
+                        className={`flex-shrink-0 text-center font-medium p-2 rounded-md transition-all active:scale-95 whitespace-nowrap px-4 ${selectedCourseId === course.id ? 'bg-amber-500 text-white' : 'text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-600'}`}
                     >
                         {course.name}
                     </button>
@@ -292,14 +292,14 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
             {selectedCourse ? (
                 <div className="space-y-6">
                     {/* Attendance Grid Card */}
-                    <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-                        <div className="p-6 border-b border-slate-200 dark:border-slate-700">
-                            <h3 className="text-xl font-bold text-slate-900 dark:text-white">Recent Sessions Attendance</h3>
-                            <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">A grid view of the last 5 sessions. You can manually toggle attendance status by clicking the dots.</p>
+                    <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
+                        <div className="p-6 border-b border-zinc-200 dark:border-zinc-700">
+                            <h3 className="text-xl font-bold text-zinc-900 dark:text-white">Recent Sessions Attendance</h3>
+                            <p className="text-zinc-500 dark:text-zinc-400 mt-1 text-sm">A grid view of the last 5 sessions. You can manually toggle attendance status by clicking the dots.</p>
                         </div>
                         <div className="overflow-x-auto">
-                            <table className="w-full text-sm text-left text-slate-600 dark:text-slate-300">
-                                <thead className="text-xs text-slate-500 dark:text-slate-400 uppercase bg-slate-100 dark:bg-slate-700/50">
+                            <table className="w-full text-sm text-left text-zinc-600 dark:text-zinc-300">
+                                <thead className="text-xs text-zinc-500 dark:text-zinc-400 uppercase bg-zinc-100 dark:bg-zinc-700/50">
                                     <tr>
                                         <th scope="col" className="p-3 font-semibold tracking-wider">Student Name</th>
                                         {selectedCourse.sessions.slice(-5).map(session => (
@@ -308,7 +308,7 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
                                                     <span>{new Date(session.date).toLocaleDateString()}</span>
                                                     <button
                                                         onClick={() => setSessionToDelete(session)}
-                                                        className="text-slate-400 hover:text-red-500 transition-colors p-1 rounded-full hover:bg-red-500/10"
+                                                        className="text-gray-400 hover:text-red-500 transition-colors p-1 rounded-full hover:bg-red-500/10"
                                                         title={`Delete session on ${new Date(session.date).toLocaleDateString()}`}
                                                         aria-label={`Delete session on ${new Date(session.date).toLocaleDateString()}`}
                                                     >
@@ -321,8 +321,8 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
                                 </thead>
                                 <tbody>
                                     {selectedCourse.students.map(student => (
-                                        <tr key={student.id} className="border-b border-slate-200 dark:border-slate-700 last:border-b-0 hover:bg-slate-50 dark:hover:bg-slate-700/30">
-                                            <td className="p-3 font-medium whitespace-nowrap text-slate-900 dark:text-slate-100">{student.name}</td>
+                                        <tr key={student.id} className="border-b border-zinc-200 dark:border-zinc-700 last:border-b-0 hover:bg-zinc-100 dark:hover:bg-zinc-700/30">
+                                            <td className="p-3 font-medium whitespace-nowrap text-zinc-900 dark:text-zinc-100">{student.name}</td>
                                             {selectedCourse.sessions.slice(-5).map(session => (
                                                 <AttendanceCell key={session.id} studentId={student.id} sessionId={session.id} />
                                             ))}
@@ -334,22 +334,22 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
                     </div>
 
                     {/* Enrolled Students Card */}
-                    <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-                        <div className="p-6 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center flex-wrap gap-4">
+                    <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
+                        <div className="p-6 border-b border-zinc-200 dark:border-zinc-700 flex justify-between items-center flex-wrap gap-4">
                             <div>
-                                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Enrolled Students ({studentStats.length})</h3>
-                                <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">A complete list of students in this course and their overall attendance summary.</p>
+                                <h3 className="text-xl font-bold text-zinc-900 dark:text-white">Enrolled Students ({studentStats.length})</h3>
+                                <p className="text-zinc-500 dark:text-zinc-400 mt-1 text-sm">A complete list of students in this course and their overall attendance summary.</p>
                             </div>
                             <button
                                 onClick={() => setIsEnrollModalOpen(true)}
-                                className="bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-300 font-bold py-2 px-4 rounded-lg hover:bg-emerald-200 dark:hover:bg-emerald-900 transition-all active:scale-95 text-sm whitespace-nowrap"
+                                className="bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-300 font-bold py-2 px-4 rounded-lg hover:bg-amber-200 dark:hover:bg-amber-900 transition-all active:scale-95 text-sm whitespace-nowrap"
                             >
                                 Enroll Student
                             </button>
                         </div>
                         <div className="overflow-y-auto max-h-[400px]">
-                            <table className="w-full text-sm text-left text-slate-600 dark:text-slate-300">
-                                <thead className="text-xs text-slate-500 dark:text-slate-400 uppercase bg-slate-100 dark:bg-slate-700/50 sticky top-0 z-10">
+                            <table className="w-full text-sm text-left text-zinc-600 dark:text-zinc-300">
+                                <thead className="text-xs text-zinc-500 dark:text-zinc-400 uppercase bg-zinc-100 dark:bg-zinc-700/50 sticky top-0 z-10">
                                     <tr>
                                         <th scope="col" className="p-3 font-semibold tracking-wider">Student Name</th>
                                         <th scope="col" className="p-3 font-semibold tracking-wider">Anonymized Name</th>
@@ -359,27 +359,27 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
                                 <tbody>
                                     {studentStats.length > 0 ? (
                                         studentStats.map(student => (
-                                            <tr key={student.id} className="border-b border-slate-200 dark:border-slate-700 last:border-b-0 hover:bg-slate-50 dark:hover:bg-slate-700/30">
-                                                <td className="p-3 font-medium whitespace-nowrap text-slate-900 dark:text-slate-100">{student.name}</td>
+                                            <tr key={student.id} className="border-b border-zinc-200 dark:border-zinc-700 last:border-b-0 hover:bg-zinc-100 dark:hover:bg-zinc-700/30">
+                                                <td className="p-3 font-medium whitespace-nowrap text-zinc-900 dark:text-zinc-100">{student.name}</td>
                                                 <td className="p-3 whitespace-nowrap">{student.anonymizedName}</td>
                                                 <td className="p-3 text-right font-medium">
                                                     <div className="flex items-center justify-end gap-3">
-                                                        <span className="font-semibold text-slate-700 dark:text-slate-200 w-20 text-center">{`${student.presentCount} / ${student.totalSessions}`}</span>
-                                                        <div className="w-24 bg-slate-200 dark:bg-slate-600 rounded-full h-2">
+                                                        <span className="font-semibold text-zinc-700 dark:text-zinc-200 w-20 text-center">{`${student.presentCount} / ${student.totalSessions}`}</span>
+                                                        <div className="w-24 bg-zinc-200 dark:bg-zinc-700 rounded-full h-2">
                                                             <div className={`h-2 rounded-full ${
                                                                 student.attendancePercentage >= 90 ? 'bg-green-500' :
-                                                                student.attendancePercentage >= 70 ? 'bg-sky-500' :
+                                                                student.attendancePercentage >= 70 ? 'bg-amber-500' :
                                                                 'bg-red-500'
                                                             }`} style={{ width: `${student.attendancePercentage}%` }}></div>
                                                         </div>
-                                                        <span className="w-12 text-left text-slate-700 dark:text-slate-200">{student.attendancePercentage}%</span>
+                                                        <span className="w-12 text-left text-zinc-700 dark:text-zinc-200">{student.attendancePercentage}%</span>
                                                     </div>
                                                 </td>
                                             </tr>
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan={3} className="p-6 text-center text-slate-500 dark:text-slate-400">
+                                            <td colSpan={3} className="p-6 text-center text-zinc-500 dark:text-zinc-400">
                                                 No students are enrolled in this course.
                                             </td>
                                         </tr>
@@ -390,7 +390,7 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
                     </div>
                 </div>
             ) : (
-                <p className="text-center text-slate-500 dark:text-slate-400 py-10">Select a course to see details.</p>
+                <p className="text-center text-zinc-500 dark:text-zinc-400 py-10">Select a course to see details.</p>
             )}
 
             {isModalOpen && activeSession && (
@@ -417,11 +417,11 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
                     role="dialog"
                 >
                     <div 
-                        className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-8 max-w-md w-full border border-slate-200 dark:border-slate-700 animate-slide-in-top"
+                        className="bg-white dark:bg-zinc-800 rounded-2xl shadow-2xl p-8 max-w-md w-full border border-zinc-200 dark:border-zinc-700 animate-slide-in-top"
                     >
-                        <h2 className="text-xl font-bold text-slate-900 dark:text-white">Confirm Session Deletion</h2>
-                        <p className="text-slate-500 dark:text-slate-400 mt-2">
-                            Are you sure you want to delete the session from <strong className="text-slate-700 dark:text-slate-200">{new Date(sessionToDelete.date).toLocaleDateString()}</strong>?
+                        <h2 className="text-xl font-bold text-zinc-900 dark:text-white">Confirm Session Deletion</h2>
+                        <p className="text-zinc-500 dark:text-zinc-400 mt-2">
+                            Are you sure you want to delete the session from <strong className="text-zinc-700 dark:text-zinc-200">{new Date(sessionToDelete.date).toLocaleDateString()}</strong>?
                         </p>
                         <p className="text-sm bg-red-500/10 text-red-600 dark:text-red-400 mt-4 p-3 rounded-md">
                             <strong>Warning:</strong> This action is irreversible and will permanently remove the session along with all its attendance records.
@@ -429,7 +429,7 @@ const CourseManager: React.FC<CourseManagerProps> = ({ courses, allStudents, cre
                         <div className="mt-6 flex justify-end space-x-4">
                             <button
                                 onClick={() => setSessionToDelete(null)}
-                                className="bg-slate-200 dark:bg-slate-600 text-slate-800 dark:text-slate-100 font-bold py-2 px-4 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-500 transition-all active:scale-95"
+                                className="bg-gray-200 dark:bg-zinc-700 text-gray-800 dark:text-gray-100 font-bold py-2 px-4 rounded-lg hover:bg-gray-300 dark:hover:bg-zinc-600 transition-all active:scale-95"
                             >
                                 Cancel
                             </button>

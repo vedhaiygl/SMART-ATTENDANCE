@@ -161,9 +161,9 @@ const StudentScanPage: React.FC<StudentScanPageProps> = ({ user, markAttendance 
     }
 
     return (
-        <div className="w-full max-w-md p-8 mt-6 space-y-6 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Mark Your Attendance</h2>
-            <p className="text-slate-500 dark:text-slate-400">Scan the session QR code or enter the short code provided by your instructor.</p>
+        <div className="w-full max-w-md p-8 mt-6 space-y-6 bg-white dark:bg-blue-900 rounded-2xl shadow-lg border border-sky-100 dark:border-blue-800">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Mark Your Attendance</h2>
+            <p className="text-gray-500 dark:text-sky-200">Scan the session QR code or enter the short code provided by your instructor.</p>
             
             {scanResult && (
                 <div className={`p-4 rounded-md text-sm font-medium ${
@@ -182,14 +182,14 @@ const StudentScanPage: React.FC<StudentScanPageProps> = ({ user, markAttendance 
                         setScanResult(null);
                         setScannerStatus('idle');
                     }}
-                    className="w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-500 transition-all duration-150 transform hover:scale-105 active:scale-95"
+                    className="w-full bg-sky-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-sky-500 transition-all duration-150 transform hover:scale-105 active:scale-95"
                 >
                     Scan QR Code
                 </button>
                 <div className="relative flex py-3 items-center">
-                    <div className="flex-grow border-t border-slate-300 dark:border-slate-600"></div>
-                    <span className="flex-shrink mx-4 text-slate-400 dark:text-slate-500 text-sm">OR</span>
-                    <div className="flex-grow border-t border-slate-300 dark:border-slate-600"></div>
+                    <div className="flex-grow border-t border-sky-200 dark:border-blue-700"></div>
+                    <span className="flex-shrink mx-4 text-gray-400 dark:text-gray-500 text-sm">OR</span>
+                    <div className="flex-grow border-t border-sky-200 dark:border-blue-700"></div>
                 </div>
                 <form onSubmit={handleManualSubmit} className="space-y-4">
                     <div>
@@ -200,10 +200,10 @@ const StudentScanPage: React.FC<StudentScanPageProps> = ({ user, markAttendance 
                             value={manualCode}
                             onChange={(e) => setManualCode(e.target.value)}
                             placeholder="e.g., ABC-123"
-                            className="w-full text-center tracking-widest font-mono text-lg p-2 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            className="w-full text-center tracking-widest font-mono text-lg p-2 bg-sky-100 dark:bg-blue-800 border border-sky-200 dark:border-blue-700 rounded-md text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-sky-500"
                         />
                     </div>
-                    <button type="submit" className="w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-500 transition-all duration-150 transform hover:scale-105 active:scale-95">
+                    <button type="submit" className="w-full bg-sky-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-sky-500 transition-all duration-150 transform hover:scale-105 active:scale-95">
                         Submit Code
                     </button>
                 </form>

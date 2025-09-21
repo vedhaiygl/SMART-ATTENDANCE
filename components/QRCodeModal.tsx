@@ -60,18 +60,18 @@ const QRCodeModal: React.FC<QRCodeModalProps> = ({ onClose, session }) => {
     const renderQRCode = () => {
         if (isLimitReached) {
             return (
-                <div className="h-[216px] flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-700 rounded-lg">
+                <div className="h-[216px] flex flex-col items-center justify-center bg-sky-100 dark:bg-blue-800 rounded-lg">
                     <h3 className="text-xl font-bold text-green-600 dark:text-green-400">Limit Reached!</h3>
-                    <p className="text-slate-600 dark:text-slate-300 mt-1">All slots are filled.</p>
+                    <p className="text-gray-600 dark:text-gray-300 mt-1">All slots are filled.</p>
                 </div>
             );
         }
 
         if (isGenerating || !qrCodeValue || timeLeft === 0) {
             return (
-                <div className="h-[216px] flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-700 rounded-lg animate-pulse">
+                <div className="h-[216px] flex flex-col items-center justify-center bg-sky-100 dark:bg-blue-800 rounded-lg animate-pulse">
                     <h3 className="text-xl font-bold text-sky-600 dark:text-sky-400">Generating New Code...</h3>
-                    <p className="text-slate-600 dark:text-slate-300 mt-1">Please wait.</p>
+                    <p className="text-gray-600 dark:text-gray-300 mt-1">Please wait.</p>
                 </div>
             );
         }
@@ -90,16 +90,16 @@ const QRCodeModal: React.FC<QRCodeModalProps> = ({ onClose, session }) => {
 
         return (
             <div className={`mt-6 ${isFocusMode ? 'w-80' : 'w-full'}`}>
-                <div className="w-full bg-slate-200 dark:bg-slate-600 rounded-full h-2.5">
+                <div className="w-full bg-sky-100 dark:bg-blue-700 rounded-full h-2.5">
                     <div
-                        className="bg-emerald-600 h-2.5 rounded-full"
+                        className="bg-sky-600 h-2.5 rounded-full"
                         style={{
                             width: `${progressPercentage}%`,
                             transition: timeLeft === QR_CODE_VALIDITY_SECONDS ? 'none' : 'width 1s linear',
                         }}
                     ></div>
                 </div>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+                <p className="text-sm text-gray-500 dark:text-sky-200 mt-2">
                     {timeLeft > 0 ? `Code expires in ${timeLeft}s` : 'Generating new code...'}
                 </p>
             </div>
@@ -109,11 +109,11 @@ const QRCodeModal: React.FC<QRCodeModalProps> = ({ onClose, session }) => {
     if (isFocusMode) {
         return (
             <div 
-                className="fixed inset-0 bg-white dark:bg-slate-900 flex flex-col items-center justify-center z-[60] p-8"
+                className="fixed inset-0 bg-white dark:bg-blue-950 flex flex-col items-center justify-center z-[60] p-8"
             >
                 <button 
                     onClick={() => setIsFocusMode(false)} 
-                    className="absolute top-6 right-6 p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all active:scale-90"
+                    className="absolute top-6 right-6 p-2 rounded-full text-gray-500 dark:text-sky-200 hover:bg-sky-100 dark:hover:bg-blue-800 transition-all active:scale-90"
                     aria-label="Exit focus mode"
                     title="Exit Focus Mode"
                 >
@@ -124,17 +124,17 @@ const QRCodeModal: React.FC<QRCodeModalProps> = ({ onClose, session }) => {
 
                     {type === 'Online' && shortCode && !isLimitReached && (
                          <div className="mt-10">
-                            <p className="text-xl text-slate-500 dark:text-slate-400 mb-2">Or enter this code:</p>
-                            <div className="bg-slate-100 dark:bg-slate-800 py-4 px-8 rounded-lg">
-                                <p className="text-5xl font-bold text-slate-900 dark:text-white tracking-widest font-mono">{shortCode}</p>
+                            <p className="text-xl text-gray-500 dark:text-sky-200 mb-2">Or enter this code:</p>
+                            <div className="bg-sky-100 dark:bg-blue-900 py-4 px-8 rounded-lg">
+                                <p className="text-5xl font-bold text-gray-900 dark:text-white tracking-widest font-mono">{shortCode}</p>
                             </div>
                         </div>
                     )}
                     
-                    <p className="text-5xl font-bold text-slate-900 dark:text-white mt-8">
+                    <p className="text-5xl font-bold text-gray-900 dark:text-white mt-8">
                         {scannedCount} / {limit}
                     </p>
-                    <p className="text-lg text-slate-400 dark:text-slate-500">Students Attended</p>
+                    <p className="text-lg text-gray-400 dark:text-gray-500">Students Attended</p>
                     {renderTimer()}
                 </div>
             </div>
@@ -147,22 +147,22 @@ const QRCodeModal: React.FC<QRCodeModalProps> = ({ onClose, session }) => {
             onClick={onClose}
         >
             <div 
-                className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center border border-slate-200 dark:border-slate-700 relative transform transition-transform scale-100"
+                className="bg-white dark:bg-blue-900 rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center border border-sky-100 dark:border-blue-800 relative transform transition-transform scale-100"
                 onClick={e => e.stopPropagation()}
             >
-                <button onClick={onClose} className="absolute top-4 right-4 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-transform active:scale-90">
+                <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 dark:text-sky-200 hover:text-gray-900 dark:hover:text-white transition-transform active:scale-90">
                     {ICONS.close}
                 </button>
                 <button 
                     onClick={() => setIsFocusMode(true)} 
-                    className="absolute top-4 left-4 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-transform active:scale-90"
+                    className="absolute top-4 left-4 text-gray-500 dark:text-sky-200 hover:text-gray-900 dark:hover:text-white transition-transform active:scale-90"
                     aria-label="Enter focus mode"
                     title="Focus Mode"
                 >
                     {ICONS.fullscreen}
                 </button>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Live Attendance Session</h2>
-                <p className="text-slate-500 dark:text-slate-400 mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Live Attendance Session</h2>
+                <p className="text-gray-500 dark:text-sky-200 mb-6">
                     {type === 'Online'
                         ? 'Students can scan this code or enter the short code.'
                         : 'Students can scan this code to mark attendance.'
@@ -173,17 +173,17 @@ const QRCodeModal: React.FC<QRCodeModalProps> = ({ onClose, session }) => {
 
                 {type === 'Online' && shortCode && !isLimitReached && (
                     <div className="mt-6">
-                        <p className="text-sm text-slate-400 dark:text-slate-500 mb-2">Or enter this code:</p>
-                        <div className="bg-slate-100 dark:bg-slate-700 py-3 px-6 rounded-lg">
-                            <p className="text-3xl font-bold text-slate-900 dark:text-white tracking-widest font-mono">{shortCode}</p>
+                        <p className="text-sm text-gray-400 dark:text-gray-500 mb-2">Or enter this code:</p>
+                        <div className="bg-sky-100 dark:bg-blue-800 py-3 px-6 rounded-lg">
+                            <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-widest font-mono">{shortCode}</p>
                         </div>
                     </div>
                 )}
                 
-                <p className="text-xl font-bold text-slate-900 dark:text-white mt-4">
+                <p className="text-xl font-bold text-gray-900 dark:text-white mt-4">
                     {scannedCount} / {limit}
                 </p>
-                <p className="text-sm text-slate-400 dark:text-slate-500">Students Attended</p>
+                <p className="text-sm text-gray-400 dark:text-gray-500">Students Attended</p>
                 {renderTimer()}
             </div>
         </div>

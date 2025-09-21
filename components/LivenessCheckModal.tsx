@@ -92,18 +92,18 @@ const LivenessCheckModal: React.FC<LivenessCheckModalProps> = ({ isOpen, onClose
             onClick={onClose}
         >
             <div 
-                className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-8 max-w-md w-full border border-slate-200 dark:border-slate-700 relative transform transition-transform scale-100"
+                className="bg-white dark:bg-blue-900 rounded-2xl shadow-2xl p-8 max-w-md w-full border border-sky-100 dark:border-blue-800 relative transform transition-transform scale-100"
                 onClick={e => e.stopPropagation()}
             >
-                <button onClick={onClose} className="absolute top-4 right-4 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-transform active:scale-90">
+                <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 dark:text-sky-200 hover:text-gray-900 dark:hover:text-white transition-transform active:scale-90">
                     {ICONS.close}
                 </button>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Liveness Check</h2>
-                <p className="text-slate-500 dark:text-slate-400 mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Liveness Check</h2>
+                <p className="text-gray-500 dark:text-sky-200 mb-6">
                     Please take a quick selfie to confirm your presence.
                 </p>
 
-                <div className="relative w-full aspect-square bg-slate-100 dark:bg-slate-700 rounded-lg overflow-hidden flex items-center justify-center">
+                <div className="relative w-full aspect-square bg-sky-100 dark:bg-blue-800 rounded-lg overflow-hidden flex items-center justify-center">
                     {capturedImage ? (
                         <img src={capturedImage} alt="Selfie preview" className="w-full h-full object-cover" />
                     ) : (
@@ -127,7 +127,7 @@ const LivenessCheckModal: React.FC<LivenessCheckModalProps> = ({ isOpen, onClose
                 <div className="mt-6 space-y-2">
                     {capturedImage ? (
                          <div className="grid grid-cols-2 gap-4">
-                            <button onClick={handleRetake} className="w-full bg-slate-200 dark:bg-slate-600 text-slate-800 dark:text-slate-100 font-bold py-3 px-4 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-500 transition-all active:scale-95">
+                            <button onClick={handleRetake} className="w-full bg-gray-200 dark:bg-blue-700 text-gray-800 dark:text-gray-100 font-bold py-3 px-4 rounded-lg hover:bg-gray-300 dark:hover:bg-blue-600 transition-all active:scale-95">
                                 Retake
                             </button>
                             <button onClick={handleSubmit} className="w-full bg-green-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-green-500 transition-all active:scale-95">
@@ -138,7 +138,7 @@ const LivenessCheckModal: React.FC<LivenessCheckModalProps> = ({ isOpen, onClose
                         <button 
                             onClick={handleCapture} 
                             disabled={!isCameraReady || !!cameraError}
-                            className="w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-500 transition-all active:scale-95 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
+                            className="w-full bg-sky-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-sky-500 transition-all active:scale-95 disabled:bg-gray-400 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
                         >
                             Capture Selfie
                         </button>
